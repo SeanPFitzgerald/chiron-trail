@@ -23,3 +23,9 @@
 yarn-debug.log*
 yarn-error.log*
 .yarn-integrity
+
+# Ignore coveralls coverage
+/coverage
+
+# Ignore environment files
+.env

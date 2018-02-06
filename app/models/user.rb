@@ -4,5 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  has_many :prescriptions
+  has_many :medications, through: :prescriptions
+
   validates :name, presence: true
 end

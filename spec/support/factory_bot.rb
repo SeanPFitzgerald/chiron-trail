@@ -8,4 +8,8 @@ FactoryBot.define do
     password_confirmation 'password'
   end
 
+  factory :medication do
+    sequence(:name) {|n| "med_#{n}"}
+    sequence(:dosage) {|n| "#{n} mg"}
+  end
 end

@@ -4,13 +4,16 @@ class Api::V1::PrescriptionsController < ApplicationController
   def create
     med = Medication.new(medication_params)
 
-    if med.valid? && med.save!
-      script = Prescription.new(prescription_params)
+    if med.save
+      script = Prescription.new(notes: params[:notes])
       script.user = current_user
       script.medication = med
       
-      if script.save!
-        render json: {}
+      if script.save
+        render status: 201, json: {
+          message: "Successfully created new prescription.",
+          prescription: script
+        }.to_json
       else
         render json: { error: script.errors.full_messages }, status: :unprocessable_entity
       end

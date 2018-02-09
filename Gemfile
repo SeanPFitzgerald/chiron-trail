@@ -41,6 +41,7 @@ end
 
 group :test do
   gem 'coveralls', require: false
+  gem 'validates_timeliness'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

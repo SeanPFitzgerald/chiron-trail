@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root 'homes#index'
   devise_for :users
   resources :treatments, only: [:new]
+  resources :wellness_checks, only: [:new]
 
   namespace :api do
     namespace :v1 do

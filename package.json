@@ -4,8 +4,11 @@
   "dependencies": {
     "@rails/webpacker": "~3.2.0",
     "babel-preset-react": "~6.24.1",
-    "prop-types": "~15.6.0",
+    "moment": "^2.20.1",
+    "prop-types": "^15.6.0",
     "react": "~15.4.2",
+    "react-datepicker": "0.40.0",
+    "react-day-picker": "^7.0.7",
     "react-dom": "~15.4.2",
     "react-router": "~3.2.0"
   },
@@ -30,6 +33,6 @@
     "test": "node_modules/.bin/karma start karma.conf.js"
   },
   "engines": {
-    "node":">=4.0"
+    "node": ">=4.0"
   }
 }

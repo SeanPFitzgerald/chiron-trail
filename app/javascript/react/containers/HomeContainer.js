@@ -14,6 +14,7 @@ class HomeContainer extends Component {
       <div>
         <h3>Hello, {this.props.currentUserName}!</h3>
         <Link to="/treatments/new"><button>Enter Treatment</button></Link>
+        <Link to="/wellness_checks/new"><button>Enter New Wellness Check</button></Link>
       </div>
     )
   }

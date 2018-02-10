@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PrescriptionFormTile from '../components/PrescriptionFormTile'
 
-class TreatmentsFormsContainerTest extends Component {
+class TreatmentsFormsContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -117,4 +117,4 @@ class TreatmentsFormsContainerTest extends Component {
   }
 }
 
-export default TreatmentsFormsContainerTest
+export default TreatmentsFormsContainer

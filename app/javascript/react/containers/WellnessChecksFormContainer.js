@@ -13,6 +13,7 @@ class WellnessChecksFormContainer extends Component {
       clearMindedness: null,
       selectedDay: new Date(),
       notes: '',
+      status: '',
       errors: []
     }
 
@@ -20,19 +21,8 @@ class WellnessChecksFormContainer extends Component {
     this.toggleCheckboxClick = this.toggleCheckboxClick.bind(this)
     this.handleDayChange = this.handleDayChange.bind(this)
     this.handleNotesChange = this.handleNotesChange.bind(this)
-
-  }
-
-  handleDayChange(day) {
-    this.setState({ selectedDay: day });
-  }
-
-  toggleCheckboxClick(event) {
-    this.setState({ [event.target.id]: parseInt(event.target.text) })
-  }
-
-  handleNotesChange(event) {
-    this.setState({ notes: event.target.value })
+    this.errorCheck = this.errorCheck.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   createCheckboxes(levelId) {
@@ -46,23 +36,113 @@ class WellnessChecksFormContainer extends Component {
       }
 
       return <LevelCheckbox
-               key={num}
-               id={levelId}
-               value={num}
-               className={currentClassName}
-               handleClick={this.toggleCheckboxClick}
-             />
+        key={num}
+        id={levelId}
+        value={num}
+        className={currentClassName}
+        handleClick={this.toggleCheckboxClick}
+      />
     })
   }
 
+  toggleCheckboxClick(event) {
+    this.setState({ [event.target.id]: parseInt(event.target.text) })
+  }
+
+  handleDayChange(day) {
+    this.setState({ selectedDay: day });
+  }
+
+  handleNotesChange(event) {
+    this.setState({ notes: event.target.value })
+  }
+
+  errorCheck() {
+    let errors = []
+    if(this.state.mood === null) {
+      errors.push('Must enter your mood level!')
+    }
+    if(this.state.energy === null) {
+      errors.push('Must enter your energy level!')
+    }
+    if(this.state.sociability === null) {
+      errors.push('Must enter your sociability level!')
+    }
+    if(this.state.clearMindedness === null) {
+      errors.push('Must enter your clear mindedness level!')
+    }
+    return errors
+  }
+
+  handleSubmit(event) {
+    event.preventDefault()
+    const errors = this.errorCheck()
+
+    if(errors.length === 0) {
+      const formPayload = {
+        mood: this.state.mood,
+        energy: this.state.energy,
+        sociability: this.state.sociability,
+        clear_mindedness: this.state.clearMindedness,
+        date: this.state.selectedDay,
+        notes: this.state.notes
+      }
+      fetch('/api/v1/wellness_checks', {
+        credentials: 'same-origin',
+        method: 'POST',
+        body: JSON.stringify(formPayload),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          return response
+        } else {
+          const errorMessage = `${response.status} (${response.statusText})`,
+            error = new Error(errorMessage);
+          throw(error);
+        }
+      })
+      .then(response => response.json())
+      .then(json => {
+        if(json.message === this.state.status) {
+          this.setState({ status: 'Successfully re-updated wellness check.', errors: [] })
+        } else {
+          this.setState({ status: json.message, errors: [] })
+        }
+      })
+      .catch(error => console.error(`Error in fetch: ${error.message}`));
+    } else {
+      this.setState({ errors: errors })
+    }
+  }
+
   render() {
-    let moodCheckboxes = this.createCheckboxes('mood')
-    let energyCheckboxes = this.createCheckboxes('energy')
-    let sociabilityCheckboxes = this.createCheckboxes('sociability')
-    let cmCheckboxes = this.createCheckboxes('clearMindedness')
+    let errorHTML
+    let errorClass = ''
+    if(this.state.errors.length > 0) {
+      errorClass = 'panel alert'
+      errorHTML = this.state.errors.map(error => {
+        return <li>{error}</li>
+      })
+    }
+
+    let statusClass
+    if(this.state.status !== '') {
+      statusClass = 'panel alert'
+    }
+    const moodCheckboxes = this.createCheckboxes('mood')
+    const energyCheckboxes = this.createCheckboxes('energy')
+    const sociabilityCheckboxes = this.createCheckboxes('sociability')
+    const cmCheckboxes = this.createCheckboxes('clearMindedness')
 
     return(
       <div>
+        <div className= {errorClass}>
+        {errorHTML}
+        </div>
+        <div className= {statusClass}>
+        {this.state.status}
+        </div>
         <form onSubmit={this.handleSubmit}>
           Mood:
           <ul className='pagination'>

@@ -14,6 +14,7 @@ FactoryBot.define do
   end
 
   factory :provider do
+    association :user
     name 'Dr. Testing'
     provider_type 'Therapist'
   end

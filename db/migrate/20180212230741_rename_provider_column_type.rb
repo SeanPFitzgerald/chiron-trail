@@ -1,4 +1,4 @@
-class ChangeProvidersTypeColumnName < ActiveRecord::Migration[5.1]
+class RenameProviderColumnType < ActiveRecord::Migration[5.1]
   def up
     rename_column :providers, :type, :provider_type
   end

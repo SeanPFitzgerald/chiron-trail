@@ -3,5 +3,5 @@ class Provider < ApplicationRecord
   belongs_to :user
 
   validates :name, presence: true
-  validates :type, presence: true
+  validates :provider_type, presence: true
 end

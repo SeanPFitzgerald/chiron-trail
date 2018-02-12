@@ -14,8 +14,9 @@ FactoryBot.define do
   end
 
   factory :provider do
+    association :user
     name 'Dr. Testing'
-    type 'Therapist'
+    provider_type 'Therapist'
   end
 
   factory :schedule do

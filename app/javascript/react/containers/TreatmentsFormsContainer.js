@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PrescriptionFormTile from '../components/PrescriptionFormTile'
+import ProviderFormTile from '../components/ProviderFormTile'
 
 class TreatmentsFormsContainer extends Component {
   constructor(props) {
@@ -10,15 +11,36 @@ class TreatmentsFormsContainer extends Component {
         dosage: '',
         notes: ''
       },
-      scriptErrors: []
+      newProvider: {
+        name: '',
+        type: ''
+      },
+      newAppointment: {
+        name: '',
+        notes: '',
+        date: '',
+        time: '',
+        rule: '',
+        interval: '',
+        day: '',
+        dayOfWeek: '',
+        until: '',
+        count: ''
+      },
+      scriptErrors: [],
+      providerErrors: []
     }
-    this.handleNameChange = this.handleNameChange.bind(this)
+    this.handleMedicationNameChange = this.handleMedicationNameChange.bind(this)
     this.handleDosageChange = this.handleDosageChange.bind(this)
-    this.handleNotesChange = this.handleNotesChange.bind(this)
+    this.handleMedicationNotesChange = this.handleMedicationNotesChange.bind(this)
+    this.checkPresciptionErrors = this.checkPresciptionErrors.bind(this)
     this.handlePrescriptionSubmit = this.handlePrescriptionSubmit.bind(this)
+    this.handleProviderNameChange = this.handleProviderNameChange.bind(this)
+    this.handleProviderTypeChange = this.handleProviderTypeChange.bind(this)
+    this.handleProviderSubmit = this.handleProviderSubmit.bind(this)
   }
 
-  handleNameChange(event) {
+  handleMedicationNameChange(event) {
     let script = Object.assign({}, this.state.newPrescription)
     script.name = event.target.value
     this.setState({ newPrescription: script })
@@ -30,18 +52,28 @@ class TreatmentsFormsContainer extends Component {
     this.setState({ newPrescription: script })
   }
 
-  handleNotesChange(event) {
+  handleMedicationNotesChange(event) {
     let script = Object.assign({}, this.state.newPrescription)
     script.notes = event.target.value
     this.setState({ newPrescription: script })
   }
 
-  handlePrescriptionSubmit(event) {
-    event.preventDefault()
+  handleProviderNameChange(event) {
+    let provider = Object.assign({}, this.state.newProvider)
+    provider.name = event.target.value
+    this.setState({ newProvider: provider })
+  }
+
+  handleProviderTypeChange(event) {
+    let provider = Object.assign({}, this.state.newProvider)
+    provider.type = event.target.value
+    this.setState({ newProvider: provider })
+  }
+
+  checkPresciptionErrors() {
     const name = this.state.newPrescription.name
     const dosage = this.state.newPrescription.dosage
-    const notes = this.state.newPrescription.notes
-    let errors = this.state.scriptErrors
+    let errors = []
 
     if(name === undefined || name === null || name === '') {
       errors.push('Must enter a medication name!')
@@ -50,13 +82,35 @@ class TreatmentsFormsContainer extends Component {
       errors.push('Must enter a medication dosage!')
     }
 
+    return errors
+  }
+
+  checkProviderErrors() {
+    const name = this.state.newPrescription.name
+    const type = this.state.newPrescription.type
+    let errors = []
+
+    if(name === undefined || name === null || name === '') {
+      errors.push('Must enter a provider name!')
+    }
+    if(type === undefined || type === null || type === '') {
+      errors.push('Must enter a provider type!')
+    }
+
+    return errors
+  }
+
+  handlePrescriptionSubmit(event) {
+    event.preventDefault()
+    const errors = this.checkPresciptionErrors()
+
     if (errors.length === 0) {
       const formPayload = {
         medication: {
-          name: name,
-          dosage: dosage
+          name: this.state.newPrescription.name,
+          dosage: this.state.newPrescription.dosage
         },
-        notes: notes
+        notes: this.state.newPrescription.notes
       }
       fetch('/api/v1/prescriptions', {
         credentials: 'same-origin',
@@ -89,29 +143,87 @@ class TreatmentsFormsContainer extends Component {
     }
   }
 
+  handleProviderSubmit(event) {
+    event.preventDefault()
+    const errors = this.checkProviderErrors()
+
+    if (errors.length === 0) {
+      const formPayload = {
+        name: this.state.newProvider.name,
+        provider_type: this.state.newProvider.type
+      }
+      fetch('/api/v1/providers', {
+        credentials: 'same-origin',
+        method: 'POST',
+        body: JSON.stringify(formPayload),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          let errorMessage = `${response.status} (${response.statusText})`,
+            error = new Error(errorMessage);
+          throw(error);
+        }
+      })
+      .then(response => {
+        this.setState({
+          newProvider: {
+            name: '',
+            provider_type: ''
+          },
+          providerErrors: []
+        })
+      })
+      .catch(error => console.error(`Error in fetch: ${error.message}`));
+    } else {
+      debugger
+      this.setState({ providerErrors: errors })
+    }
+  }
+
   render() {
     let scriptErrorClass = ''
     let scriptErrorList
-    let keyNum = 0
     if(this.state.scriptErrors.length > 0) {
-      scriptErrorList = this.state.scriptErrors.map(error => {
-        keyNum += 1
-        return <li key={keyNum}>{error}</li>
+      scriptErrorList = this.state.scriptErrors.map((error, index) => {
+        return <li key={index}>{error}</li>
       })
       scriptErrorClass = 'panel alert'
     }
+    let providerErrorClass = ''
+    let providerErrorList
+    if(this.state.providerErrors.length > 0) {
+      providerErrorList = this.state.providerErrors.map((error, index) => {
+        return <li key={index}>{error}</li>
+      })
+      providerErrorClass = 'panel alert'
+    }
     return(
       <div>
+        <div className={providerErrorClass}>{providerErrorList}</div>
+        <div>
+          <ProviderFormTile
+            handleSubmit={this.handleProviderSubmit}
+            changeName={this.handleProviderNameChange}
+            changeType={this.handleProviderTypeChange}
+            name={this.state.newProvider.name}
+            type={this.state.newProvider.dosage}
+          />
+        </div>
         <div className={scriptErrorClass}>{scriptErrorList}</div>
-        <PrescriptionFormTile
-          handleSubmit={this.handlePrescriptionSubmit}
-          changeName={this.handleNameChange}
-          changeDosage={this.handleDosageChange}
-          changeNotes={this.handleNotesChange}
-          name={this.state.newPrescription.name}
-          dosage={this.state.newPrescription.dosage}
-          notes={this.state.newPrescription.notes}
-        />
+        <div>
+          <PrescriptionFormTile
+            handleSubmit={this.handlePrescriptionSubmit}
+            changeName={this.handleMedicationNameChange}
+            changeDosage={this.handleDosageChange}
+            changeNotes={this.handleMedicationNotesChange}
+            name={this.state.newPrescription.name}
+            dosage={this.state.newPrescription.dosage}
+            notes={this.state.newPrescription.notes}
+          />
+        </div>
       </div>
     )
   }

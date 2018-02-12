@@ -8,6 +8,9 @@ class User < ApplicationRecord
   has_many :medications, through: :prescriptions
 
   has_many :wellness_checks
-  
+
+  has_many :appointments
+  has_many :providers, through: :appointments
+
   validates :name, presence: true
 end

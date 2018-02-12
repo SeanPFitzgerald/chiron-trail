@@ -10,7 +10,7 @@ class User < ApplicationRecord
   has_many :wellness_checks
 
   has_many :appointments
-  has_many :providers, through: :appointments
+  has_many :providers
 
   validates :name, presence: true
 end

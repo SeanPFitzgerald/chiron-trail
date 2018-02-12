@@ -15,7 +15,7 @@ FactoryBot.define do
 
   factory :provider do
     name 'Dr. Testing'
-    type 'Therapist'
+    provider_type 'Therapist'
   end
 
   factory :schedule do

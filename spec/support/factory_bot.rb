@@ -12,4 +12,21 @@ FactoryBot.define do
     sequence(:name) {|n| "med_#{n}"}
     sequence(:dosage) {|n| "#{n} mg"}
   end
+
+  factory :provider do
+    name 'Dr. Testing'
+    type 'Therapist'
+  end
+
+  factory :schedule do
+    date Date.today
+    time Time.now
+
+    rule 'weekly'
+
+    day ['monday', 'wednesday']
+
+    sequence(:until) { Date.today + 60 }
+    count 8
+  end
 end

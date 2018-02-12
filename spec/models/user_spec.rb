@@ -14,6 +14,8 @@ RSpec.describe User, type: :model do
   it { should have_many(:medications).through(:prescriptions) }
 
   it { should have_many(:wellness_checks) }
+  it { should have_many(:appointments) }
+  it { should have_many(:providers).through(:appointments) }
 
   it 'has a matching password confirmation' do
     user = User.new

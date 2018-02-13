@@ -1,6 +1,7 @@
 import React from 'react'
 import HomeContainer from './containers/HomeContainer'
-import TreatmentsFormsContainer from './containers/TreatmentsFormsContainer'
+import ProvidersFormAndIndexContainer from './containers/ProvidersFormAndIndexContainer'
+import PrescriptionsFormAndIndexContainer from './containers/PrescriptionsFormAndIndexContainer'
 import WellnessChecksFormContainer from './containers/WellnessChecksFormContainer'
 import { Router, browserHistory, Route, IndexRoute } from 'react-router'
 
@@ -14,9 +15,18 @@ const App = (props) => {
            />
   })
 
-  let TreatmentsContainerWrapper = ((props) => {
+  let ProvidersFormAndIndexContainerWrapper = ((props) => {
     let user = JSON.parse(document.getElementById('app').dataset.currentUser)
-    return <TreatmentsFormsContainer
+    return <ProvidersFormAndIndexContainer
+             currentUserId={user.id}
+             currentUserName={user.name}
+             {...props}
+           />
+  })
+
+  let PrescriptionsFormAndIndexContainerWrapper = ((props) => {
+    let user = JSON.parse(document.getElementById('app').dataset.currentUser)
+    return <PrescriptionsFormAndIndexContainer
              currentUserId={user.id}
              currentUserName={user.name}
              {...props}
@@ -37,7 +47,8 @@ const App = (props) => {
       <Route path='/' >
       <IndexRoute component={HomeContainerWrapper} />
         <Route path='/home' component={HomeContainerWrapper} />
-        <Route path='/treatments/new' component={TreatmentsContainerWrapper} />
+        <Route path='/providers/new' component={ProvidersFormAndIndexContainerWrapper} />
+        <Route path='/prescriptions/new' component={PrescriptionsFormAndIndexContainerWrapper} />
         <Route path='/wellness_checks/new' component={WellnessContainerWrapper} />
       </Route>
     </Router>

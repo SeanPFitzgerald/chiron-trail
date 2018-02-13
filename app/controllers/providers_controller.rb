@@ -1,4 +1,4 @@
-class TreatmentsController < ApplicationController
+class ProvidersController < ApplicationController
   def new
     @current_user = current_user
     render :'homes/index'

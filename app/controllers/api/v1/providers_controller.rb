@@ -1,10 +1,16 @@
 class Api::V1::ProvidersController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:create]
+  skip_before_action :verify_authenticity_token, only: [:index, :create]
+
+  def index
+    providers = Provider.all
+
+    render json: providers
+  end
 
   def create
     provider = Provider.new(provider_params)
     provider.user = current_user
-    
+
     if provider.save
       render status: 201, json: {
         message: "Successfully created new provider.",

@@ -1,9 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router'
 
 const ProviderFormTile = (props) => {
   return(
     <div>
-      <h2>New Provider Form</h2>
+      <h3>New Provider Form</h3>
       <form onSubmit={props.handleSubmit}>
         <label>Enter Provider Name:
           <input type='text' value={props.name} onChange={props.changeName} />
@@ -14,6 +15,7 @@ const ProviderFormTile = (props) => {
         </label>
 
         <button type='submit'>Submit</button>
+        <Link to='/'><button type='button' className='backButton'>Back</button></Link>
       </form>
     </div>
   )

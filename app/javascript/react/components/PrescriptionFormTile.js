@@ -1,9 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router'
 
 const PrescriptionFormTile = (props) => {
   return(
     <div>
-      <h2>New Prescription Form</h2>
+      <h3>New Prescription Form</h3>
       <form onSubmit={props.handleSubmit}>
         <label>Enter Medication Name:
           <input type='text' value={props.name} onChange={props.changeName} />
@@ -17,7 +18,8 @@ const PrescriptionFormTile = (props) => {
           <textarea value={props.notes} onChange={props.changeNotes} />
         </label>
 
-        <button type="submit">Submit</button>
+        <button type='submit'>Submit</button>
+        <Link to='/'><button type='button' className='backButton'>Back</button></Link>
       </form>
     </div>
   )

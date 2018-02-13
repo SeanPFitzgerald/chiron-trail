@@ -73,7 +73,6 @@ RSpec.describe Api::V1::ProvidersController, type: :request do
         returned_json = JSON.parse(response.body)
 
         expect(returned_json['error'][0]).to eq 'User must exist'
-        expect(returned_json['error'][1]).to eq "User can't be blank"
       end
     end
   end

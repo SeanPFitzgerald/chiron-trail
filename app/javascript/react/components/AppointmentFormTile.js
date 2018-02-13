@@ -1,5 +1,6 @@
 import React from 'react'
 import DayPickerInput from 'react-day-picker/DayPickerInput'
+import * as Datetime from 'react-datetime'
 import { Link } from 'react-router'
 
 const AppointmentFormTile = (props) => {
@@ -12,16 +13,27 @@ const AppointmentFormTile = (props) => {
         </label>
 
         <label>Enter Provider:
-          <select>
+          <select onChange={props.changeProvider}>
             {props.providers.map((provider, index) => <option key={index} value={provider.id}>{provider.name}</option>)}
           </select>
         </label>
 
         <label>Date:
           <div>
-            <DayPickerInput
-              onDayChange={props.handleDayChange}
-              value={props.selectedDay}
+            <Datetime
+              timeFormat={false}
+              onChange={props.changeDate}
+              defaultValue={props.defaultTime}
+            />
+          </div>
+        </label>
+
+        <label>Time:
+          <div>
+            <Datetime
+              dateFormat={false}
+              onChange={props.changeTime}
+              defaultValue={props.defaultTime}
             />
           </div>
         </label>

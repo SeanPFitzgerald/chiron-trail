@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import AppointmentFormTile from '../components/AppointmentFormTile'
+import moment from 'moment'
 
 class AppointmentsFormAndIndexContainer extends Component {
   constructor(props) {
@@ -9,12 +10,15 @@ class AppointmentsFormAndIndexContainer extends Component {
       selectedProvider: null,
       notes: '',
       providers: [],
-      selectedDay: new Date(),
+      defaultTime: moment('12', 'HH'),
+      selectedDate: null,
+      selectedTime: null,
       errors: []
     }
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleProviderChange = this.handleProviderChange.bind(this)
-    this.handleDayChange = this.handleDayChange.bind(this)
+    this.handleDateChange = this.handleDateChange.bind(this)
+    this.handleTimeChange = this.handleTimeChange.bind(this)
     this.handleNotesChange = this.handleNotesChange.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -28,8 +32,12 @@ class AppointmentsFormAndIndexContainer extends Component {
     this.setState({ selectedProvider: event.target.value })
   }
 
-  handleDayChange(event) {
-    this.setState({ selectedDay: event.target.value });
+  handleDateChange(event) {
+    this.setState({ selectedDate: event._d.toDateString() });
+  }
+
+  handleTimeChange(event) {
+    this.setState({ selectedTime: event._d.toTimeString() });
   }
 
   handleNotesChange(event) {
@@ -50,11 +58,13 @@ class AppointmentsFormAndIndexContainer extends Component {
   handleSubmit(event) {
     event.preventDefault()
     const errors = this.checkErrors()
-
+debugger
     if (errors.length === 0) {
       const formPayload = {
         name: this.state.name,
         provider: this.state.selectedProvider,
+        date: this.state.selectedDate,
+        time: this.state.selectedTime,
         notes: this.state.notes
       }
       fetch('/api/v1/appointments', {
@@ -76,6 +86,8 @@ class AppointmentsFormAndIndexContainer extends Component {
         this.setState({
           name: '',
           selectedProvider: null,
+          selectedDate: null,
+          selectedTime: null,
           notes: '',
           errors: []
         })
@@ -126,7 +138,9 @@ class AppointmentsFormAndIndexContainer extends Component {
             name={this.state.name}
             providers={this.state.providers}
             selectedProvider={this.state.selectedProvider}
-            selectedDay={this.state.selectedDay}
+            changeDate={this.handleDateChange}
+            defaultTime={this.state.defaultTime}
+            changeTime={this.handleTimeChange}
             notes={this.state.notes}
           />
         </div>

@@ -85,7 +85,7 @@ class ProvidersFormAndIndexContainer extends Component {
       errorClass = 'panel alert'
     }
     return(
-      <div>
+      <div className='row panel small-8 small-centered columns'>
         <div className={errorClass}>{errorList}</div>
         <div>
           <ProviderFormTile

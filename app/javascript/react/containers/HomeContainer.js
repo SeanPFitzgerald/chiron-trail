@@ -11,12 +11,14 @@ class HomeContainer extends Component {
 
   render() {
     return(
-      <div>
+      <div className='row'>
         <h3>Hello, {this.props.currentUserName}!</h3>
-        <Link to='/providers/new'><button>Providers</button></Link>
-        <Link to='/prescriptions/new'><button>Prescriptions</button></Link>
-        <Link to='/appointments/new'><button>Appointments</button></Link>
-        <Link to='/wellness_checks/new'><button>Enter New Wellness Check</button></Link>
+        <div className='group'>
+        <Link to='/providers/new' className='homeButtons'><button>Providers</button></Link>
+        <Link to='/prescriptions/new' className='homeButtons'><button>Prescriptions</button></Link>
+        <Link to='/appointments/new' className='homeButtons'><button>Appointments</button></Link>
+        <Link to='/wellness_checks/new' className='homeButtons'><button>Enter New Wellness Check</button></Link>
+      </div>
       </div>
     )
   }

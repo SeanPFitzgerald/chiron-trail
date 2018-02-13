@@ -1,10 +1,11 @@
 import React from 'react'
 import DayPickerInput from 'react-day-picker/DayPickerInput'
+import { Link } from 'react-router'
 
 const AppointmentFormTile = (props) => {
   return(
     <div>
-      <h2>New Appointment Form</h2>
+      <h3>New Appointment Form</h3>
       <form onSubmit={props.handleSubmit}>
         <label>Enter Appointment Name:
           <input type='text' value={props.name} onChange={props.changeName} />
@@ -29,7 +30,8 @@ const AppointmentFormTile = (props) => {
           <textarea value={props.notes} onChange={props.changeNotes} />
         </label>
 
-        <button type="submit">Submit</button>
+        <button type='submit'>Submit</button>
+        <Link to='/'><button type='button' className='backButton'>Back</button></Link>
       </form>
     </div>
   )

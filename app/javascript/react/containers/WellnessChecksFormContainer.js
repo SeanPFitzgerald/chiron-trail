@@ -136,13 +136,14 @@ class WellnessChecksFormContainer extends Component {
     const cmCheckboxes = this.createCheckboxes('clearMindedness')
 
     return(
-      <div>
+      <div className='row panel small-8 small-centered columns'>
         <div className= {errorClass}>
         {errorHTML}
         </div>
         <div className= {statusClass}>
         {this.state.status}
         </div>
+        <h3>Enter Wellness Check</h3>
         <form onSubmit={this.handleSubmit}>
           Mood:
           <ul className='pagination'>
@@ -160,6 +161,7 @@ class WellnessChecksFormContainer extends Component {
           <ul className='pagination'>
             {cmCheckboxes}
           </ul>
+          Date:
           <div>
             <DayPickerInput
               onDayChange={this.handleDayChange}
@@ -168,7 +170,7 @@ class WellnessChecksFormContainer extends Component {
           </div>
           <textarea value={this.state.notes} onChange={this.handleNotesChange} />
           <button type='submit' value='Submit'>Submit</button>
-          <Link to="/"><button type="button">Back</button></Link>
+          <Link to='/'><button type='button' className='backButton'>Back</button></Link>
         </form>
       </div>
     )

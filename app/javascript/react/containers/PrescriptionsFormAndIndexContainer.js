@@ -96,7 +96,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
     }
 
     return(
-      <div>
+      <div className='row panel small-8 small-centered columns'>
         <div className={errorClass}>{errorList}</div>
         <div>
           <PrescriptionFormTile

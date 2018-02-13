@@ -15,3 +15,11 @@
  *= require foundation_and_overrides
 
  */
+
+.homeButtons {
+  margin: .5em;
+}
+
+.backButton {
+  float: right;
+}

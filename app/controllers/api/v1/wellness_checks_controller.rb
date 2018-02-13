@@ -1,5 +1,25 @@
 class Api::V1::WellnessChecksController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:create]
+  skip_before_action :verify_authenticity_token, only: [:index, :create]
+
+  def index
+    checks = WellnessCheck.order(:date).where(user: current_user)
+
+    dates = checks.pluck(:date)
+    mood = checks.pluck(:mood)
+    energy = checks.pluck(:energy)
+    sociability = checks.pluck(:sociability)
+    clear_mindedness = checks.pluck(:clear_mindedness)
+
+    levels = {
+      dates: dates,
+      mood: mood,
+      energy: energy,
+      sociability: sociability,
+      clearMindedness: clear_mindedness
+    }
+
+    render json: levels
+  end
 
   def create
     check = WellnessCheck.find_by(date: wellness_check_params[:date], user: current_user)
@@ -31,7 +51,7 @@ class Api::V1::WellnessChecksController < ApplicationController
   private
 
   def wellness_check_params
-    params.require(:wellness_check).permit(:mood, :energy, :sociability, :clear_mindedness, :date, :notes)
+    params.require(:wellness_check).permit(:mood, :energy, :sociability, :clear_mindedness, :date, :notes, :user)
   end
 
   def render_errors(check)

@@ -38,6 +38,15 @@ const AppointmentFormTile = (props) => {
           </div>
         </label>
 
+        <label>Rule:
+          <select onChange={props.changeRule}>
+            <option value='singular'>singular</option>
+            <option value='daily'>daily</option>
+            <option value='weekly'>weekly</option>
+            <option value='monthly'>monthly</option>
+          </select>
+        </label>
+
         <label>(Optional) Enter Notes:
           <textarea value={props.notes} onChange={props.changeNotes} />
         </label>

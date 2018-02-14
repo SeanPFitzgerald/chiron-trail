@@ -11,14 +11,16 @@ class AppointmentsFormAndIndexContainer extends Component {
       notes: '',
       providers: [],
       defaultTime: moment('12', 'HH'),
-      selectedDate: null,
-      selectedTime: null,
+      selectedDate: new Date(),
+      selectedTime: moment('12', 'HH'),
+      rule: 'singular',
       errors: []
     }
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleProviderChange = this.handleProviderChange.bind(this)
     this.handleDateChange = this.handleDateChange.bind(this)
     this.handleTimeChange = this.handleTimeChange.bind(this)
+    this.handleRuleChange = this.handleRuleChange.bind(this)
     this.handleNotesChange = this.handleNotesChange.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -33,11 +35,15 @@ class AppointmentsFormAndIndexContainer extends Component {
   }
 
   handleDateChange(event) {
-    this.setState({ selectedDate: event._d.toDateString() });
+    this.setState({ selectedDate: event._d });
   }
 
   handleTimeChange(event) {
-    this.setState({ selectedTime: event._d.toTimeString() });
+    this.setState({ selectedTime: event._d });
+  }
+
+  handleRuleChange(event) {
+    this.setState({ rule: event.target.value });
   }
 
   handleNotesChange(event) {
@@ -58,14 +64,23 @@ class AppointmentsFormAndIndexContainer extends Component {
   handleSubmit(event) {
     event.preventDefault()
     const errors = this.checkErrors()
-debugger
+    
     if (errors.length === 0) {
       const formPayload = {
-        name: this.state.name,
-        provider: this.state.selectedProvider,
-        date: this.state.selectedDate,
-        time: this.state.selectedTime,
-        notes: this.state.notes
+        appointment: {
+          name: this.state.name,
+          provider: this.state.selectedProvider,
+          'date(1i)': this.state.selectedDate.year(),
+          'date(2i)': this.state.selectedDate.month() + 1,
+          'date(3i)': this.state.selectedDate.date(),
+          'time(1i)': this.state.selectedDate.year(),
+          'time(2i)': this.state.selectedDate.month() + 1,
+          'time(3i)': this.state.selectedDate.date(),
+          'time(4i)': this.state.selectedTime.hour(),
+          'time(5i)': this.state.selectedTime.minute(),
+          rule: this.state.rule,
+          notes: this.state.notes
+        }
       }
       fetch('/api/v1/appointments', {
         credentials: 'same-origin',
@@ -99,7 +114,11 @@ debugger
   }
 
   componentDidMount() {
-    fetch('/api/v1/providers')
+    fetch('/api/v1/providers', {
+      credentials: 'same-origin',
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
     .then(response => {
       if (response.ok) {
         return response;
@@ -111,7 +130,7 @@ debugger
     })
     .then(response => response.json())
     .then(json => {
-      this.setState({ providers: json })
+      this.setState({ selectedProvider: json[0], providers: json })
     })
     .catch(error => console.error(`Error in fetch: ${error.message}`));
   }
@@ -141,6 +160,7 @@ debugger
             changeDate={this.handleDateChange}
             defaultTime={this.state.defaultTime}
             changeTime={this.handleTimeChange}
+            changeRule={this.handleRuleChange}
             notes={this.state.notes}
           />
         </div>

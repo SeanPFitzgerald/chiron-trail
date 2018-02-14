@@ -1,5 +1,4 @@
 import React from 'react'
-import DayPickerInput from 'react-day-picker/DayPickerInput'
 import * as Datetime from 'react-datetime'
 import { Link } from 'react-router'
 

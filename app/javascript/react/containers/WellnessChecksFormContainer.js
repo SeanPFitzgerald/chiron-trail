@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import LevelCheckbox from '../components/LevelCheckbox'
-import DayPickerInput from 'react-day-picker/DayPickerInput'
+import Checkbox from '../components/Checkbox'
+import * as Datetime from 'react-datetime'
+import moment from 'moment'
 import { Link } from 'react-router'
 
 class WellnessChecksFormContainer extends Component {
@@ -35,13 +36,13 @@ class WellnessChecksFormContainer extends Component {
         currentClassName = 'current'
       }
 
-      return <LevelCheckbox
-        key={num}
-        id={levelId}
-        value={num}
-        className={currentClassName}
-        handleClick={this.toggleCheckboxClick}
-      />
+      return <Checkbox
+               key={num}
+               id={levelId}
+               value={num}
+               className={currentClassName}
+               handleClick={this.toggleCheckboxClick}
+             />
     })
   }
 
@@ -161,13 +162,16 @@ class WellnessChecksFormContainer extends Component {
           <ul className='pagination'>
             {cmCheckboxes}
           </ul>
-          Date:
-          <div>
-            <DayPickerInput
-              onDayChange={this.handleDayChange}
-              value={this.state.selectedDay}
-            />
-          </div>
+          <label>
+            Date:
+            <div>
+              <Datetime
+                timeFormat={false}
+                onChange={this.state.handleDayChange}
+                defaultValue={this.state.defaultDate}
+              />
+            </div>
+          </label>
           <textarea value={this.state.notes} onChange={this.handleNotesChange} />
           <button type='submit' value='Submit'>Submit</button>
           <Link to='/'><button type='button' className='backButton'>Back</button></Link>

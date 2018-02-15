@@ -7,6 +7,7 @@
     "moment": "^2.20.1",
     "prop-types": "^15.6.0",
     "react": "~15.5.0",
+    "react-datetime": "^2.8.11",
     "react-c3js": "^0.1.20",
     "react-day-picker": "^7.0.7",
     "react-dom": "~15.5.0",

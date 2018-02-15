@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import AppointmentFormTile from '../components/AppointmentFormTile'
+import Checkbox from '../components/Checkbox'
+import moment from 'moment'
 
 class AppointmentsFormAndIndexContainer extends Component {
   constructor(props) {
@@ -9,12 +11,20 @@ class AppointmentsFormAndIndexContainer extends Component {
       selectedProvider: null,
       notes: '',
       providers: [],
-      selectedDay: new Date(),
+      defaultTime: moment('12', 'HH'),
+      selectedDate: moment(),
+      selectedTime: moment('12', 'HH'),
+      selectedDays: [""],
+      rule: 'singular',
       errors: []
     }
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleProviderChange = this.handleProviderChange.bind(this)
-    this.handleDayChange = this.handleDayChange.bind(this)
+    this.handleDateChange = this.handleDateChange.bind(this)
+    this.handleTimeChange = this.handleTimeChange.bind(this)
+    this.handleRuleChange = this.handleRuleChange.bind(this)
+    this.toggleCheckboxClick = this.toggleCheckboxClick.bind(this)
+    this.createCheckboxes = this.createCheckboxes.bind(this)
     this.handleNotesChange = this.handleNotesChange.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -28,8 +38,57 @@ class AppointmentsFormAndIndexContainer extends Component {
     this.setState({ selectedProvider: event.target.value })
   }
 
-  handleDayChange(event) {
-    this.setState({ selectedDay: event.target.value });
+  handleDateChange(event) {
+    this.setState({ selectedDate: event._d });
+  }
+
+  handleTimeChange(event) {
+    this.setState({ selectedTime: event._d });
+  }
+
+  handleRuleChange(event) {
+    this.setState({ rule: event.target.value });
+  }
+
+
+  toggleCheckboxClick(event) {
+    event.preventDefault()
+
+    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    let newDays = []
+
+    if(this.state.selectedDays.includes(event.target.id)) {
+      newDays = this.state.selectedDays.filter(day => {
+      	return day != event.target.id
+      })
+    } else {
+      newDays = days.filter(day => {
+      	return (this.state.selectedDays.includes(day) || day == event.target.id)
+      })
+      newDays.unshift("")
+    }
+
+    this.setState({ selectedDays: newDays })
+  }
+
+  createCheckboxes() {
+    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+    return days.map((day, index) => {
+      let currentClassName = ''
+
+      if(this.state.selectedDays.includes(day)) {
+        currentClassName = 'current'
+      }
+
+      return <Checkbox
+               key={index}
+               id={day}
+               value={day.slice(0,3)}
+               className={currentClassName}
+               handleClick={this.toggleCheckboxClick}
+             />
+    })
   }
 
   handleNotesChange(event) {
@@ -50,12 +109,27 @@ class AppointmentsFormAndIndexContainer extends Component {
   handleSubmit(event) {
     event.preventDefault()
     const errors = this.checkErrors()
-
+debugger;
     if (errors.length === 0) {
+      let days = this.state.selectedDays.map(day => {
+        return day.toLowerCase()
+      })
       const formPayload = {
-        name: this.state.name,
-        provider: this.state.selectedProvider,
-        notes: this.state.notes
+        appointment: {
+          name: this.state.name,
+          provider: this.state.selectedProvider,
+          'date(1i)': (moment(this.state.selectedDate).year()).toString(),
+          'date(2i)': (moment(this.state.selectedDate).month() + 1).toString(),
+          'date(3i)': (moment(this.state.selectedDate).date()).toString(),
+          'time(1i)': (moment(this.state.selectedDate).year()).toString(),
+          'time(2i)': (moment(this.state.selectedDate).month() + 1).toString(),
+          'time(3i)': (moment(this.state.selectedDate).date()).toString(),
+          'time(4i)': (moment(this.state.selectedTime).hour()).toString(),
+          'time(5i)': (moment(this.state.selectedTime).minute()).toString(),
+          day: days,
+          rule: this.state.rule,
+          notes: this.state.notes
+        }
       }
       fetch('/api/v1/appointments', {
         credentials: 'same-origin',
@@ -72,10 +146,13 @@ class AppointmentsFormAndIndexContainer extends Component {
           throw(error);
         }
       })
+      .then(response => response.json())
       .then(response => {
         this.setState({
           name: '',
           selectedProvider: null,
+          selectedDate: null,
+          selectedTime: null,
           notes: '',
           errors: []
         })
@@ -87,7 +164,11 @@ class AppointmentsFormAndIndexContainer extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/v1/providers')
+    fetch('/api/v1/providers', {
+      credentials: 'same-origin',
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
     .then(response => {
       if (response.ok) {
         return response;
@@ -99,7 +180,7 @@ class AppointmentsFormAndIndexContainer extends Component {
     })
     .then(response => response.json())
     .then(json => {
-      this.setState({ providers: json })
+      this.setState({ selectedProvider: json[0], providers: json })
     })
     .catch(error => console.error(`Error in fetch: ${error.message}`));
   }
@@ -113,6 +194,7 @@ class AppointmentsFormAndIndexContainer extends Component {
       })
       errorClass = 'panel alert'
     }
+    const weekCheckboxes = this.createCheckboxes()
 
     return(
       <div className='row panel small-8 small-centered columns'>
@@ -126,7 +208,11 @@ class AppointmentsFormAndIndexContainer extends Component {
             name={this.state.name}
             providers={this.state.providers}
             selectedProvider={this.state.selectedProvider}
-            selectedDay={this.state.selectedDay}
+            changeDate={this.handleDateChange}
+            defaultTime={this.state.defaultTime}
+            changeTime={this.handleTimeChange}
+            changeRule={this.handleRuleChange}
+            daysCheckboxes={weekCheckboxes}
             notes={this.state.notes}
           />
         </div>

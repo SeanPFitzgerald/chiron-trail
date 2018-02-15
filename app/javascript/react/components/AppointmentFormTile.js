@@ -1,5 +1,6 @@
 import React from 'react'
-import DayPickerInput from 'react-day-picker/DayPickerInput'
+import Checkbox from './Checkbox'
+import * as Datetime from 'react-datetime'
 import { Link } from 'react-router'
 
 const AppointmentFormTile = (props) => {
@@ -7,23 +8,49 @@ const AppointmentFormTile = (props) => {
     <div>
       <h3>New Appointment Form</h3>
       <form onSubmit={props.handleSubmit}>
-        <label>Enter Appointment Name:
+        <label>Enter Description:
           <input type='text' value={props.name} onChange={props.changeName} />
         </label>
 
         <label>Enter Provider:
-          <select>
+          <select onChange={props.changeProvider}>
             {props.providers.map((provider, index) => <option key={index} value={provider.id}>{provider.name}</option>)}
           </select>
         </label>
 
         <label>Date:
           <div>
-            <DayPickerInput
-              onDayChange={props.handleDayChange}
-              value={props.selectedDay}
+            <Datetime
+              timeFormat={false}
+              onChange={props.changeDate}
+              defaultValue={props.defaultTime}
             />
           </div>
+        </label>
+
+        <label>Time:
+          <div>
+            <Datetime
+              dateFormat={false}
+              onChange={props.changeTime}
+              defaultValue={props.defaultTime}
+            />
+          </div>
+        </label>
+
+        <label>Rule:
+          <select onChange={props.changeRule}>
+            <option value='singular'>singular</option>
+            <option value='daily'>daily</option>
+            <option value='weekly'>weekly</option>
+            <option value='monthly'>monthly</option>
+          </select>
+        </label>
+
+        <label>Days of the Week:
+          <ul className='pagination days'>
+            {props.daysCheckboxes}
+          </ul>
         </label>
 
         <label>(Optional) Enter Notes:

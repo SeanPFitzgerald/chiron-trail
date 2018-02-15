@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import AppointmentFormTile from '../components/AppointmentFormTile'
+import Checkbox from '../components/Checkbox'
 import moment from 'moment'
 
 class AppointmentsFormAndIndexContainer extends Component {
@@ -11,8 +12,9 @@ class AppointmentsFormAndIndexContainer extends Component {
       notes: '',
       providers: [],
       defaultTime: moment('12', 'HH'),
-      selectedDate: new Date(),
+      selectedDate: moment(),
       selectedTime: moment('12', 'HH'),
+      selectedDays: [""],
       rule: 'singular',
       errors: []
     }
@@ -21,6 +23,8 @@ class AppointmentsFormAndIndexContainer extends Component {
     this.handleDateChange = this.handleDateChange.bind(this)
     this.handleTimeChange = this.handleTimeChange.bind(this)
     this.handleRuleChange = this.handleRuleChange.bind(this)
+    this.toggleCheckboxClick = this.toggleCheckboxClick.bind(this)
+    this.createCheckboxes = this.createCheckboxes.bind(this)
     this.handleNotesChange = this.handleNotesChange.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -46,6 +50,47 @@ class AppointmentsFormAndIndexContainer extends Component {
     this.setState({ rule: event.target.value });
   }
 
+
+  toggleCheckboxClick(event) {
+    event.preventDefault()
+
+    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    let newDays = []
+
+    if(this.state.selectedDays.includes(event.target.id)) {
+      newDays = this.state.selectedDays.filter(day => {
+      	return day != event.target.id
+      })
+    } else {
+      newDays = days.filter(day => {
+      	return (this.state.selectedDays.includes(day) || day == event.target.id)
+      })
+      newDays.unshift("")
+    }
+
+    this.setState({ selectedDays: newDays })
+  }
+
+  createCheckboxes() {
+    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+    return days.map((day, index) => {
+      let currentClassName = ''
+
+      if(this.state.selectedDays.includes(day)) {
+        currentClassName = 'current'
+      }
+
+      return <Checkbox
+               key={index}
+               id={day}
+               value={day.slice(0,3)}
+               className={currentClassName}
+               handleClick={this.toggleCheckboxClick}
+             />
+    })
+  }
+
   handleNotesChange(event) {
     this.setState({ notes: event.target.value })
   }
@@ -64,20 +109,24 @@ class AppointmentsFormAndIndexContainer extends Component {
   handleSubmit(event) {
     event.preventDefault()
     const errors = this.checkErrors()
-    
+debugger;
     if (errors.length === 0) {
+      let days = this.state.selectedDays.map(day => {
+        return day.toLowerCase()
+      })
       const formPayload = {
         appointment: {
           name: this.state.name,
           provider: this.state.selectedProvider,
-          'date(1i)': this.state.selectedDate.year(),
-          'date(2i)': this.state.selectedDate.month() + 1,
-          'date(3i)': this.state.selectedDate.date(),
-          'time(1i)': this.state.selectedDate.year(),
-          'time(2i)': this.state.selectedDate.month() + 1,
-          'time(3i)': this.state.selectedDate.date(),
-          'time(4i)': this.state.selectedTime.hour(),
-          'time(5i)': this.state.selectedTime.minute(),
+          'date(1i)': (moment(this.state.selectedDate).year()).toString(),
+          'date(2i)': (moment(this.state.selectedDate).month() + 1).toString(),
+          'date(3i)': (moment(this.state.selectedDate).date()).toString(),
+          'time(1i)': (moment(this.state.selectedDate).year()).toString(),
+          'time(2i)': (moment(this.state.selectedDate).month() + 1).toString(),
+          'time(3i)': (moment(this.state.selectedDate).date()).toString(),
+          'time(4i)': (moment(this.state.selectedTime).hour()).toString(),
+          'time(5i)': (moment(this.state.selectedTime).minute()).toString(),
+          day: days,
           rule: this.state.rule,
           notes: this.state.notes
         }
@@ -97,6 +146,7 @@ class AppointmentsFormAndIndexContainer extends Component {
           throw(error);
         }
       })
+      .then(response => response.json())
       .then(response => {
         this.setState({
           name: '',
@@ -144,6 +194,7 @@ class AppointmentsFormAndIndexContainer extends Component {
       })
       errorClass = 'panel alert'
     }
+    const weekCheckboxes = this.createCheckboxes()
 
     return(
       <div className='row panel small-8 small-centered columns'>
@@ -161,6 +212,7 @@ class AppointmentsFormAndIndexContainer extends Component {
             defaultTime={this.state.defaultTime}
             changeTime={this.handleTimeChange}
             changeRule={this.handleRuleChange}
+            daysCheckboxes={weekCheckboxes}
             notes={this.state.notes}
           />
         </div>

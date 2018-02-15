@@ -24,3 +24,8 @@
 .backButton {
   float: right;
 }
+
+.pagination.days.li {
+  font-size: 15rem;
+  margin: 10rem;
+}

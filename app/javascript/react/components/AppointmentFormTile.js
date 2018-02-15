@@ -1,4 +1,5 @@
 import React from 'react'
+import Checkbox from './Checkbox'
 import * as Datetime from 'react-datetime'
 import { Link } from 'react-router'
 
@@ -7,7 +8,7 @@ const AppointmentFormTile = (props) => {
     <div>
       <h3>New Appointment Form</h3>
       <form onSubmit={props.handleSubmit}>
-        <label>Enter Appointment Name:
+        <label>Enter Description:
           <input type='text' value={props.name} onChange={props.changeName} />
         </label>
 
@@ -44,6 +45,12 @@ const AppointmentFormTile = (props) => {
             <option value='weekly'>weekly</option>
             <option value='monthly'>monthly</option>
           </select>
+        </label>
+
+        <label>Days of the Week:
+          <ul className='pagination days'>
+            {props.daysCheckboxes}
+          </ul>
         </label>
 
         <label>(Optional) Enter Notes:

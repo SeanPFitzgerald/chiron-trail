@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LevelCheckbox = (props) => {
+const Checkbox = (props) => {
   return (
     <li className={props.className} >
       <a href='#' id={props.id} onClick={props.handleClick}>
@@ -10,4 +10,4 @@ const LevelCheckbox = (props) => {
   )
 }
 
-export default LevelCheckbox
+export default Checkbox

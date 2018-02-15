@@ -1,18 +1,24 @@
 class Api::V1::PrescriptionsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:create]
 
+  def index
+    scripts = Prescription.where(user: current_user)
+
+    render json: scripts, include: [:medication]
+  end
+
   def create
-    med = Medication.new(medication_params)
+    med = Medication.find_or_initialize_by(medication_params)
 
     if med.save
       script = Prescription.new(notes: params[:notes])
       script.user = current_user
       script.medication = med
-      
+
       if script.save
         render status: 201, json: {
           message: "Successfully created new prescription.",
-          prescription: script
+          prescriptions: Prescription.where(user: current_user)
         }.to_json
       else
         render json: { error: script.errors.full_messages }, status: :unprocessable_entity

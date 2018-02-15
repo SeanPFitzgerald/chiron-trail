@@ -52,8 +52,8 @@ class WellnessChecksFormContainer extends Component {
   }
 
   handleDateChange(date) {
-    event.preventDefault()
-    this.setState({ selectedDate: date });
+    debugger
+    this.setState({ selectedDate: date._d });
   }
 
   handleNotesChange(event) {
@@ -171,7 +171,7 @@ class WellnessChecksFormContainer extends Component {
             <div>
               <Datetime
                 timeFormat={false}
-                onChange={this.state.handleDateChange}
+                onChange={this.handleDateChange}
                 defaultValue={this.state.selectedDate}
               />
             </div>

@@ -13,4 +13,5 @@ class User < ApplicationRecord
   has_many :providers
 
   validates :name, presence: true
+  validates :phone_number, length: { is: 12 }
 end

@@ -10,6 +10,9 @@ RSpec.describe User, type: :model do
   it { should have_valid(:password).when('qwerty') }
   it { should_not have_valid(:password).when('qwer') }
 
+  it { should have_valid(:phone_number).when('+12345678901') }
+  it { should_not have_valid(:phone_number).when('12345678901', '1234567890123') }
+
   it { should have_many(:prescriptions) }
   it { should have_many(:medications).through(:prescriptions) }
 

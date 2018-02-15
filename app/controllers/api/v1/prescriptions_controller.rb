@@ -18,7 +18,7 @@ class Api::V1::PrescriptionsController < ApplicationController
       if script.save
         render status: 201, json: {
           message: "Successfully created new prescription.",
-          prescriptions: Prescription.where(user: current_user)
+          prescriptions: script
         }.to_json
       else
         render json: { error: script.errors.full_messages }, status: :unprocessable_entity

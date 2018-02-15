@@ -2,7 +2,11 @@ class Api::V1::WellnessChecksController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:index, :create]
 
   def index
-    checks = WellnessCheck.order(:date).where(user: current_user)
+    if params['from'].nil?
+      checks = WellnessCheck.where(user: current_user).order(:date)
+    else
+      checks = WellnessCheck.where(user: current_user).where(date: params['from']..params['to']).order(:date)
+    end
 
     dates = checks.pluck(:date)
     mood = checks.pluck(:mood)

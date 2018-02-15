@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Checkbox from '../components/Checkbox'
 import * as Datetime from 'react-datetime'
 import moment from 'moment'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 
 class WellnessChecksFormContainer extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ class WellnessChecksFormContainer extends Component {
       energy: null,
       sociability: null,
       clearMindedness: null,
-      selectedDay: new Date(),
+      selectedDate: moment(),
       notes: '',
       status: '',
       errors: []
@@ -20,7 +20,7 @@ class WellnessChecksFormContainer extends Component {
 
     this.createCheckboxes = this.createCheckboxes.bind(this)
     this.toggleCheckboxClick = this.toggleCheckboxClick.bind(this)
-    this.handleDayChange = this.handleDayChange.bind(this)
+    this.handleDateChange = this.handleDateChange.bind(this)
     this.handleNotesChange = this.handleNotesChange.bind(this)
     this.errorCheck = this.errorCheck.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -47,14 +47,17 @@ class WellnessChecksFormContainer extends Component {
   }
 
   toggleCheckboxClick(event) {
+    event.preventDefault()
     this.setState({ [event.target.id]: parseInt(event.target.text) })
   }
 
-  handleDayChange(day) {
-    this.setState({ selectedDay: day });
+  handleDateChange(date) {
+    event.preventDefault()
+    this.setState({ selectedDate: date });
   }
 
   handleNotesChange(event) {
+    event.preventDefault()
     this.setState({ notes: event.target.value })
   }
 
@@ -85,7 +88,7 @@ class WellnessChecksFormContainer extends Component {
         energy: this.state.energy,
         sociability: this.state.sociability,
         clear_mindedness: this.state.clearMindedness,
-        date: this.state.selectedDay,
+        date: this.state.selectedDate,
         notes: this.state.notes
       }
       fetch('/api/v1/wellness_checks', {
@@ -105,11 +108,12 @@ class WellnessChecksFormContainer extends Component {
       })
       .then(response => response.json())
       .then(json => {
-        if(json.message === this.state.status) {
-          this.setState({ status: 'Successfully re-updated wellness check.', errors: [] })
-        } else {
-          this.setState({ status: json.message, errors: [] })
-        }
+        // if(json.message === this.state.status) {
+          browserHistory.push('/')
+          // this.setState({ status: 'Successfully re-updated wellness check.', errors: [] })
+        // } else {
+        //   this.setState({ status: json.message, errors: [] })
+        // }
       })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
     } else {
@@ -167,8 +171,8 @@ class WellnessChecksFormContainer extends Component {
             <div>
               <Datetime
                 timeFormat={false}
-                onChange={this.state.handleDayChange}
-                defaultValue={this.state.defaultDate}
+                onChange={this.state.handleDateChange}
+                defaultValue={this.state.selectedDate}
               />
             </div>
           </label>

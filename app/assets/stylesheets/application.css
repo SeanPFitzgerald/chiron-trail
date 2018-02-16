@@ -29,3 +29,7 @@
   font-size: 15rem;
   margin: 10rem;
 }
+
+.floatRight {
+  float: right;
+}

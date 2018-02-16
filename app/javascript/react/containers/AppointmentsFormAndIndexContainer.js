@@ -11,6 +11,7 @@ class AppointmentsFormAndIndexContainer extends Component {
       selectedProvider: null,
       notes: '',
       providers: [],
+      appointments: [],
       defaultTime: moment('12', 'HH'),
       selectedDate: moment(),
       selectedTime: moment('12', 'HH'),
@@ -28,6 +29,7 @@ class AppointmentsFormAndIndexContainer extends Component {
     this.handleNotesChange = this.handleNotesChange.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.fetchAllAppointments = this.fetchAllAppointments.bind(this)
   }
 
   handleNameChange(event) {
@@ -109,7 +111,7 @@ class AppointmentsFormAndIndexContainer extends Component {
   handleSubmit(event) {
     event.preventDefault()
     const errors = this.checkErrors()
-    
+
     if (errors.length === 0) {
       let days = this.state.selectedDays.map(day => {
         return day.toLowerCase()
@@ -156,6 +158,7 @@ class AppointmentsFormAndIndexContainer extends Component {
           notes: '',
           errors: []
         })
+        this.fetchAllAppointments()
       })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
     } else {
@@ -181,8 +184,32 @@ class AppointmentsFormAndIndexContainer extends Component {
     .then(response => response.json())
     .then(json => {
       this.setState({ selectedProvider: json[0], providers: json })
+      this.fetchAllAppointments()
     })
     .catch(error => console.error(`Error in fetch: ${error.message}`));
+  }
+
+
+  fetchAllAppointments() {
+    fetch('/api/v1/appointments', {
+      credentials: 'same-origin',
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        let errorMessage = `${response.status} (${response.statusText})`,
+          error = new Error(errorMessage);
+        throw(error);
+      }
+    })
+    .then(response => response.json())
+    .then(json => {
+      this.setState({ appointments: json })
+    })
+    .catch(error => console.error(`Error in fetch: ${error.message}`))
   }
 
   render() {
@@ -194,7 +221,34 @@ class AppointmentsFormAndIndexContainer extends Component {
       })
       errorClass = 'panel alert'
     }
+
     const weekCheckboxes = this.createCheckboxes()
+
+    let appointmentClass = ''
+    let appointmentList
+    if(this.state.appointments.length > 0) {
+      appointmentList = this.state.appointments.map((appointment, index) => {
+        if (appointment.name === null || appointment.name === '') {
+          appointment.name = 'None'
+        }
+        if (appointment.notes === null || appointment.notes === '') {
+          appointment.notes = 'None'
+        }
+
+        return <div key={index}>
+                 <li>
+                   <strong>Description:</strong> {appointment.name}
+                   <span className='floatRight'><strong>Provider:</strong> {appointment.provider.name}</span>
+                   <ol>
+                     Sart Date: {moment(appointment.schedule.date).format('ddd, MMM Do YYYY')}<br />
+                     Time: {moment(appointment.schedule.time).format('h:mm a')}<br />
+                     Notes: {appointment.notes}<br />
+                   </ol>
+                 </li><br />
+               </div>
+      })
+      appointmentClass = 'row panel small-8 small-centered columns'
+    }
 
     return(
       <div className='row panel small-8 small-centered columns'>
@@ -215,6 +269,12 @@ class AppointmentsFormAndIndexContainer extends Component {
             daysCheckboxes={weekCheckboxes}
             notes={this.state.notes}
           />
+        </div>
+        <h4>Your Appointments:</h4>
+        <div className={appointmentClass}>
+          <ul>
+            {appointmentList}
+          </ul>
         </div>
       </div>
     )

@@ -213,7 +213,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
 
     let prescriptionClass = ''
     let prescriptionList
-    let prescriptioTitle = ''
+    let prescriptionTitle = ''
     if(this.state.prescriptions.length > 0) {
       prescriptionList = this.state.prescriptions.map((prescription, index) => {
         return <li key={index}>
@@ -229,7 +229,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
       prescriptionClass = 'row panel small-8 small-centered columns'
       prescriptionTitle = 'Your Prescriptions:'
     }
-    
+
     return(
       <div>
         <NavBar />

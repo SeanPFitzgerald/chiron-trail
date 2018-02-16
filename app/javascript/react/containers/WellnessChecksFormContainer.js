@@ -176,7 +176,7 @@ class WellnessChecksFormContainer extends Component {
             </label>
             <label>Notes:</label>
             <textarea value={this.state.notes} onChange={this.handleNotesChange} />
-            <button type='submit' value='Submit'>Submit</button>
+            <button className='button tiny' type='submit' value='Submit'>Submit</button>
             <BackButton />
           </form>
         </div>

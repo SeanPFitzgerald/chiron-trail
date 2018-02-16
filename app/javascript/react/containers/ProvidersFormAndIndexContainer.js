@@ -117,11 +117,13 @@ class ProvidersFormAndIndexContainer extends Component {
 
     let providerClass = ''
     let providerList
+    let providerTitle = ''
     if(this.state.providers.length > 0) {
       providerList = this.state.providers.map((provider, index) => {
         return <li key={index}><strong>Name:</strong> {provider.name} <ol><strong>Type:</strong> {provider.provider_type}</ol><br /></li>
       })
       providerClass = 'row panel small-8 small-centered columns'
+      providerTitle = 'Your Providers:'
     }
 
     return(
@@ -140,7 +142,7 @@ class ProvidersFormAndIndexContainer extends Component {
           </div>
         </div>
         <div className={providerClass}>
-          <h4>Your Providers:</h4>
+          <h4>{providerTitle}</h4>
           <ul>
             {providerList}
           </ul>

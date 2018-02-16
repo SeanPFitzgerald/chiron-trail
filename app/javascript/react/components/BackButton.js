@@ -3,8 +3,8 @@ import { browserHistory } from 'react-router'
 
 const BackButton = () => {
   return(
-    <div className='button-small back'>
-      <button onClick={browserHistory.goBack}>Back</button>
+    <div className='floatRight'>
+      <button className='button tiny' onClick={browserHistory.goBack}>Back</button>
     </div>
   )
 }

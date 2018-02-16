@@ -5,6 +5,7 @@ const NavBar = (props) => {
   return(
     <div className='row'>
       <div className='button-group'>
+        <Link to='/' ><button className='button small'>Home</button></Link>
         <Link to='/providers/new' ><button className='button small'>Providers</button></Link>
         <Link to='/prescriptions/new'><button className='button small'>Prescriptions</button></Link>
         <Link to='/appointments/new' ><button className='button small'>Appointments</button></Link>

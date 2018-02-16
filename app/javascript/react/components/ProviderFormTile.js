@@ -6,15 +6,15 @@ const ProviderFormTile = (props) => {
     <div>
       <h3>New Provider Form</h3>
       <form onSubmit={props.handleSubmit}>
-        <label>Enter Provider Name:
+        <label>Provider Name:
           <input type='text' value={props.name} onChange={props.changeName} />
         </label>
 
-        <label>Enter Provider Type:
+        <label>Provider Type:
           <input type='text' value={props.type} onChange={props.changeType} />
         </label>
 
-        <button type='submit'>Submit</button>
+        <button className='button tiny' type='submit'>Submit</button>
         <BackButton />
       </form>
     </div>

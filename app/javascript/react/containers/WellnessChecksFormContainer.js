@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Checkbox from '../components/Checkbox'
 import * as Datetime from 'react-datetime'
 import moment from 'moment'
+import { browserHistory } from 'react-router'
 import NavBar from '../components/NavBar'
 import BackButton from '../components/BackButton'
 
@@ -108,12 +109,7 @@ class WellnessChecksFormContainer extends Component {
       })
       .then(response => response.json())
       .then(json => {
-        // if(json.message === this.state.status) {
-          browserHistory.push('/')
-          // this.setState({ status: 'Successfully re-updated wellness check.', errors: [] })
-        // } else {
-        //   this.setState({ status: json.message, errors: [] })
-        // }
+        browserHistory.push('/')
       })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
     } else {
@@ -178,6 +174,7 @@ class WellnessChecksFormContainer extends Component {
                 />
               </div>
             </label>
+            <label>Notes:</label>
             <textarea value={this.state.notes} onChange={this.handleNotesChange} />
             <button type='submit' value='Submit'>Submit</button>
             <BackButton />

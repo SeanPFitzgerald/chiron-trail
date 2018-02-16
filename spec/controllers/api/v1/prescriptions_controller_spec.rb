@@ -3,13 +3,28 @@ require 'rails_helper'
 RSpec.describe Api::V1::PrescriptionsController, type: :request do
   let!(:user) { FactoryBot.create(:user) }
   let!(:medication) { FactoryBot.create(:medication) }
+  let!(:date) { DateTime.now }
   let!(:valid_params) do
     {
       medication: {
         name: "med",
         dosage: "dose"
       },
-      notes: 'testing notes'
+      prescription: {
+        'date(1i)': date.year,
+        'date(2i)': date.month,
+        'date(3i)': date.day,
+        'time(1i)': date.year,
+        'time(2i)': date.month,
+        'time(3i)': date.day,
+        'time(4i)': date.hour,
+        'time(5i)': date.minute,
+        interval: '1',
+        day: ["", 'monday', 'friday'],
+        count: 0,
+        rule: 'weekly',
+        notes: 'testing notes'
+      }
     }
   end
   let!(:invalid_params) do
@@ -42,7 +57,7 @@ RSpec.describe Api::V1::PrescriptionsController, type: :request do
 
         expect(returned_json["prescription"]["user_id"]).to eq user.id
         expect(returned_json["prescription"]["medication_id"]).to eq (medication.id + 1)
-        expect(returned_json["prescription"]["notes"]).to eq valid_params[:notes]
+        expect(returned_json["prescription"]["notes"]).to eq valid_params[:prescription][:notes]
       end
 
       it 'creates prescription with the correct attributes' do
@@ -50,7 +65,7 @@ RSpec.describe Api::V1::PrescriptionsController, type: :request do
 
         expect(Prescription.last.user).to eq user
         expect(Prescription.last.medication.id).to eq (medication.id + 1)
-        expect(Prescription.last.notes).to eq valid_params[:notes]
+        expect(Prescription.last.notes).to eq valid_params[:prescription][:notes]
       end
     end
 

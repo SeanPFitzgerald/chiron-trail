@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router'
+import BackButton from './BackButton'
 
 const ProviderFormTile = (props) => {
   return(
@@ -15,7 +15,7 @@ const ProviderFormTile = (props) => {
         </label>
 
         <button type='submit'>Submit</button>
-        <Link to='/'><button type='button' className='backButton'>Back</button></Link>
+        <BackButton />
       </form>
     </div>
   )

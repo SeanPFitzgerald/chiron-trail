@@ -1,7 +1,7 @@
 import React from 'react'
 import Checkbox from './Checkbox'
 import * as Datetime from 'react-datetime'
-import { Link } from 'react-router'
+import BackButton from './BackButton'
 
 const AppointmentFormTile = (props) => {
   return(
@@ -48,9 +48,11 @@ const AppointmentFormTile = (props) => {
         </label>
 
         <label>Days of the Week:
-          <ul className='pagination days'>
-            {props.daysCheckboxes}
-          </ul>
+          <div className='days'>
+            <ul className='pagination'>
+              {props.daysCheckboxes}
+            </ul>
+          </div>
         </label>
 
         <label>(Optional) Enter Notes:
@@ -58,7 +60,7 @@ const AppointmentFormTile = (props) => {
         </label>
 
         <button type='submit'>Submit</button>
-        <Link to='/'><button type='button' className='backButton'>Back</button></Link>
+        <BackButton />
       </form>
     </div>
   )

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import AppointmentFormTile from '../components/AppointmentFormTile'
 import Checkbox from '../components/Checkbox'
+import NavBar from '../components/NavBar'
 import moment from 'moment'
 
 class AppointmentsFormAndIndexContainer extends Component {
@@ -251,27 +252,30 @@ class AppointmentsFormAndIndexContainer extends Component {
     }
 
     return(
-      <div className='row panel small-8 small-centered columns'>
-        <div className={errorClass}>{errorList}</div>
-        <div>
-          <AppointmentFormTile
-            handleSubmit={this.handleSubmit}
-            changeName={this.handleNameChange}
-            changeProvider={this.handleProviderChange}
-            changeNotes={this.handleNotesChange}
-            name={this.state.name}
-            providers={this.state.providers}
-            selectedProvider={this.state.selectedProvider}
-            changeDate={this.handleDateChange}
-            defaultTime={this.state.defaultTime}
-            changeTime={this.handleTimeChange}
-            changeRule={this.handleRuleChange}
-            daysCheckboxes={weekCheckboxes}
-            notes={this.state.notes}
-          />
+      <div>
+        <NavBar />
+        <div className='row panel small-8 small-centered columns'>
+          <div className={errorClass}>{errorList}</div>
+          <div>
+            <AppointmentFormTile
+              handleSubmit={this.handleSubmit}
+              changeName={this.handleNameChange}
+              changeProvider={this.handleProviderChange}
+              changeNotes={this.handleNotesChange}
+              name={this.state.name}
+              providers={this.state.providers}
+              selectedProvider={this.state.selectedProvider}
+              changeDate={this.handleDateChange}
+              defaultTime={this.state.defaultTime}
+              changeTime={this.handleTimeChange}
+              changeRule={this.handleRuleChange}
+              daysCheckboxes={weekCheckboxes}
+              notes={this.state.notes}
+            />
+          </div>
         </div>
-        <h4>Your Appointments:</h4>
         <div className={appointmentClass}>
+          <h4>Your Appointments:</h4>
           <ul>
             {appointmentList}
           </ul>

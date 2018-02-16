@@ -16,7 +16,7 @@ class HomeContainer extends Component {
       energy: [],
       sociability: [],
       clearMindedness: [],
-      graphType: 'line',
+      graphType: 'Line',
       fromDate: null,
       toDate: null
     }
@@ -104,7 +104,7 @@ class HomeContainer extends Component {
   }
 
   createCheckboxes() {
-    let types = ['line', 'bar']
+    let types = ['Line', 'Bar']
 
     return types.map((type, index) => {
       let currentClassName = ''
@@ -156,7 +156,7 @@ class HomeContainer extends Component {
     const sociabilityColumn = ['Sociability'].concat(this.state.sociability)
     const clearMindednessColumn = ['Clear-Mindedness'].concat(this.state.clearMindedness)
 
-    if(this.state.graphType === 'line') {
+    if(this.state.graphType === 'Line') {
       c3.generate({
         bindto: "#chart",
         data: {

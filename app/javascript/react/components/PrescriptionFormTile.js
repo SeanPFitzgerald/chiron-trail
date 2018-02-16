@@ -7,11 +7,11 @@ const PrescriptionFormTile = (props) => {
     <div>
       <h3>New Prescription Form</h3>
       <form onSubmit={props.handleSubmit}>
-        <label>Enter Medication Name:
+        <label>Medication Name:
           <input type='text' value={props.name} onChange={props.changeName} />
         </label>
 
-        <label>Enter Medication Dosage:
+        <label>Medication Dosage:
           <input type='text' value={props.dosage} onChange={props.changeDosage} />
         </label>
 
@@ -56,7 +56,7 @@ const PrescriptionFormTile = (props) => {
           <textarea value={props.notes} onChange={props.changeNotes} />
         </label>
 
-        <button className='buttontiny' type='submit'>Submit</button>
+        <button className='button tiny' type='submit'>Submit</button>
         <BackButton />
       </form>
     </div>

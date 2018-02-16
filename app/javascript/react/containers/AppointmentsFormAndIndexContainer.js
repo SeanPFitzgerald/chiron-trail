@@ -227,6 +227,7 @@ class AppointmentsFormAndIndexContainer extends Component {
 
     let appointmentClass = ''
     let appointmentList
+    let appointmentTitle = ''
     if(this.state.appointments.length > 0) {
       appointmentList = this.state.appointments.map((appointment, index) => {
         if (appointment.name === null || appointment.name === '') {
@@ -249,6 +250,7 @@ class AppointmentsFormAndIndexContainer extends Component {
                </div>
       })
       appointmentClass = 'row panel small-8 small-centered columns'
+      appointmentTitle = 'Your Appointments:'
     }
 
     return(
@@ -275,7 +277,7 @@ class AppointmentsFormAndIndexContainer extends Component {
           </div>
         </div>
         <div className={appointmentClass}>
-          <h4>Your Appointments:</h4>
+          <h4>{appointmentTitle}</h4>
           <ul>
             {appointmentList}
           </ul>

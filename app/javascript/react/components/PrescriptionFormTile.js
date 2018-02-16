@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router'
+import BackButton from './BackButton'
 
 const PrescriptionFormTile = (props) => {
   return(
@@ -19,7 +19,7 @@ const PrescriptionFormTile = (props) => {
         </label>
 
         <button type='submit'>Submit</button>
-        <Link to='/'><button type='button' className='backButton'>Back</button></Link>
+        <BackButton />
       </form>
     </div>
   )

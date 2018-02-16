@@ -21,15 +21,26 @@
   margin: .5em;
 }
 
-.backButton {
+.button-small.back {
   float: right;
 }
 
-.pagination.days.li {
-  font-size: 15rem;
-  margin: 10rem;
+.days {
+  align-content: center;
+}
+
+.pagination.li.font-size {
+  font-size: 30rem;
+}
+
+.pagination.days {
+
 }
 
 .floatRight {
   float: right;
+}
+
+.button-group {
+  text-align: center;
 }

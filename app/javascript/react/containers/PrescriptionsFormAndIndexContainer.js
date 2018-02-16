@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PrescriptionFormTile from '../components/PrescriptionFormTile'
+import NavBar from '../components/NavBar'
 
 class PrescriptionsFormAndIndexContainer extends Component {
   constructor(props) {
@@ -136,6 +137,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
 
     return(
       <div>
+        <NavBar />
         <div className='row panel small-8 small-centered columns'>
           <div className={errorClass}>{errorList}</div>
           <div>
@@ -151,6 +153,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
           </div>
         </div>
         <div className={prescriptionClass}>
+          <h4>Your Prescriptions:</h4>
           <ul>
             {prescriptionList}
           </ul>

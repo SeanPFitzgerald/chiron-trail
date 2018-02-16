@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ProviderFormTile from '../components/ProviderFormTile'
+import NavBar from '../components/NavBar'
 
 class ProvidersFormAndIndexContainer extends Component {
   constructor(props) {
@@ -124,18 +125,22 @@ class ProvidersFormAndIndexContainer extends Component {
     }
 
     return(
-      <div className='row panel small-8 small-centered columns'>
-        <div className={errorClass}>{errorList}</div>
-        <div>
-          <ProviderFormTile
-            handleSubmit={this.handleSubmit}
-            changeName={this.handleNameChange}
-            changeType={this.handleTypeChange}
-            name={this.state.name}
-            type={this.state.type}
-          />
+      <div>
+        <NavBar />
+        <div className='row panel small-8 small-centered columns'>
+          <div className={errorClass}>{errorList}</div>
+          <div>
+            <ProviderFormTile
+              handleSubmit={this.handleSubmit}
+              changeName={this.handleNameChange}
+              changeType={this.handleTypeChange}
+              name={this.state.name}
+              type={this.state.type}
+            />
+          </div>
         </div>
         <div className={providerClass}>
+          <h4>Your Providers:</h4>
           <ul>
             {providerList}
           </ul>

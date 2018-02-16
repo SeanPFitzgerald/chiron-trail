@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import Checkbox from '../components/Checkbox'
 import * as Datetime from 'react-datetime'
 import moment from 'moment'
-import { Link, browserHistory } from 'react-router'
+import NavBar from '../components/NavBar'
+import BackButton from '../components/BackButton'
 
 class WellnessChecksFormContainer extends Component {
   constructor(props) {
@@ -52,7 +53,6 @@ class WellnessChecksFormContainer extends Component {
   }
 
   handleDateChange(date) {
-    debugger
     this.setState({ selectedDate: date._d });
   }
 
@@ -141,45 +141,48 @@ class WellnessChecksFormContainer extends Component {
     const cmCheckboxes = this.createCheckboxes('clearMindedness')
 
     return(
-      <div className='row panel small-8 small-centered columns'>
-        <div className= {errorClass}>
-        {errorHTML}
+      <div>
+        <NavBar />
+        <div className='row panel small-8 small-centered columns'>
+          <div className= {errorClass}>
+          {errorHTML}
+          </div>
+          <div className= {statusClass}>
+          {this.state.status}
+          </div>
+          <h3>Enter Wellness Check</h3>
+          <form onSubmit={this.handleSubmit}>
+            Mood:
+            <ul className='pagination'>
+              {moodCheckboxes}
+            </ul>
+            Energy:
+            <ul className='pagination'>
+              {energyCheckboxes}
+            </ul>
+            Sociability:
+            <ul className='pagination'>
+              {sociabilityCheckboxes}
+            </ul>
+            Clear Mindedness:
+            <ul className='pagination'>
+              {cmCheckboxes}
+            </ul>
+            <label>
+              Date:
+              <div>
+                <Datetime
+                  timeFormat={false}
+                  onChange={this.handleDateChange}
+                  defaultValue={this.state.selectedDate}
+                />
+              </div>
+            </label>
+            <textarea value={this.state.notes} onChange={this.handleNotesChange} />
+            <button type='submit' value='Submit'>Submit</button>
+            <BackButton />
+          </form>
         </div>
-        <div className= {statusClass}>
-        {this.state.status}
-        </div>
-        <h3>Enter Wellness Check</h3>
-        <form onSubmit={this.handleSubmit}>
-          Mood:
-          <ul className='pagination'>
-            {moodCheckboxes}
-          </ul>
-          Energy:
-          <ul className='pagination'>
-            {energyCheckboxes}
-          </ul>
-          Sociability:
-          <ul className='pagination'>
-            {sociabilityCheckboxes}
-          </ul>
-          Clear Mindedness:
-          <ul className='pagination'>
-            {cmCheckboxes}
-          </ul>
-          <label>
-            Date:
-            <div>
-              <Datetime
-                timeFormat={false}
-                onChange={this.handleDateChange}
-                defaultValue={this.state.selectedDate}
-              />
-            </div>
-          </label>
-          <textarea value={this.state.notes} onChange={this.handleNotesChange} />
-          <button type='submit' value='Submit'>Submit</button>
-          <Link to='/'><button type='button' className='backButton'>Back</button></Link>
-        </form>
       </div>
     )
   }

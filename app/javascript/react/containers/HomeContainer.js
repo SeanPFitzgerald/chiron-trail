@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router'
 import C3Chart from 'react-c3js'
 import c3 from 'c3'
 import moment from 'moment'
 import * as Datetime from 'react-datetime'
 import Checkbox from '../components/Checkbox'
+import NavBar from '../components/NavBar'
 
 
 class HomeContainer extends Component {
@@ -226,20 +226,20 @@ class HomeContainer extends Component {
       dateRange = this.createDateRange()
     }
     return(
-      <div className='row small-8 small-centered columns'>
-        <h3>Hello, {this.props.currentUserName}!</h3>
-        <div className='group'>
-          <ul className='pagination'>
-            {graphTypes}
-          </ul>
+      <div className='row small-10 large-10 small-centered large-centered columns'>
+        <NavBar />
+        <div className='small-10 large-10 small-centered large-centered columns'>
+          <h3>Hello, {this.props.currentUserName}!</h3>
+          <div className='group'>
+            <ul className='pagination'>
+              {graphTypes}
+            </ul>
 
-          <div id='chart'/>
+            <div id='chart'/>
 
-          {dateRange}
-          <Link to='/providers/new' className='homeButtons'><button>Providers</button></Link> <Link to='/prescriptions/new' className='homeButtons'><button>Prescriptions</button></Link>
-          <Link to='/appointments/new' className='homeButtons'><button>Appointments</button></Link>
-          <Link to='/wellness_checks/new' className='homeButtons'><button>Enter New Wellness Check</button></Link>
-      </div>
+            {dateRange}
+          </div>
+        </div>
       </div>
     )
   }

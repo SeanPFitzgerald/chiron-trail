@@ -8,17 +8,17 @@ const AppointmentFormTile = (props) => {
     <div>
       <h3>New Appointment Form</h3>
       <form onSubmit={props.handleSubmit}>
-        <label>Enter Description:
+        <label>Description:
           <input type='text' value={props.name} onChange={props.changeName} />
         </label>
 
-        <label>Enter Provider:
+        <label>Provider:
           <select onChange={props.changeProvider}>
             {props.providers.map((provider, index) => <option key={index} value={provider.id}>{provider.name}</option>)}
           </select>
         </label>
 
-        <label className='small-6 large-6 columns'>Date:
+        <label className='small-4 large-4 columns'>Start Date:
           <div>
             <Datetime
               timeFormat={false}
@@ -28,7 +28,7 @@ const AppointmentFormTile = (props) => {
           </div>
         </label>
 
-        <label className='small-6 large-6 columns'>Time:
+        <label className='small-4 large-4 columns'>Time:
           <div>
             <Datetime
               dateFormat={false}
@@ -38,7 +38,7 @@ const AppointmentFormTile = (props) => {
           </div>
         </label>
 
-        <label>Rule:
+        <label className='small-4 large-4 columns'>Rule:
           <select onChange={props.changeRule}>
             <option value='singular'>singular</option>
             <option value='daily'>daily</option>
@@ -55,11 +55,11 @@ const AppointmentFormTile = (props) => {
           </div>
         </label>
 
-        <label>(Optional) Enter Notes:
+        <label>(Optional) Notes:
           <textarea value={props.notes} onChange={props.changeNotes} />
         </label>
 
-        <button type='submit'>Submit</button>
+        <button className='button tiny' type='submit'>Submit</button>
         <BackButton />
       </form>
     </div>

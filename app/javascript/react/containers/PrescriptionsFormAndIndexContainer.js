@@ -128,11 +128,13 @@ class PrescriptionsFormAndIndexContainer extends Component {
 
     let prescriptionClass = ''
     let prescriptionList
+    let prescriptioTitle = ''
     if(this.state.prescriptions.length > 0) {
       prescriptionList = this.state.prescriptions.map((prescription, index) => {
         return <li key={index}><strong>Name:</strong> {prescription.medication.name} <strong>Dosage:</strong> {prescription.medication.dosage} <ol>Notes: {prescription.notes}</ol></li>
       })
       prescriptionClass = 'row panel small-8 small-centered columns'
+      prescriptioTitle = 'Your Prescribers:'
     }
 
     return(
@@ -153,7 +155,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
           </div>
         </div>
         <div className={prescriptionClass}>
-          <h4>Your Prescriptions:</h4>
+          <h4>{prescriptioTitle}</h4>
           <ul>
             {prescriptionList}
           </ul>

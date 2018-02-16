@@ -109,7 +109,7 @@ class AppointmentsFormAndIndexContainer extends Component {
   handleSubmit(event) {
     event.preventDefault()
     const errors = this.checkErrors()
-debugger;
+    
     if (errors.length === 0) {
       let days = this.state.selectedDays.map(day => {
         return day.toLowerCase()

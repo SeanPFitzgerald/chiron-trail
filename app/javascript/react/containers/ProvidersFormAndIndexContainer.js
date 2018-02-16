@@ -7,12 +7,14 @@ class ProvidersFormAndIndexContainer extends Component {
     this.state = {
       name: '',
       type: '',
+      providers: [],
       errors: []
     }
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleTypeChange = this.handleTypeChange.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.fetchAllProviders = this.fetchAllProviders.bind(this)
   }
 
   handleNameChange(event) {
@@ -68,11 +70,38 @@ class ProvidersFormAndIndexContainer extends Component {
           type: '',
           errors: []
         })
+        this.fetchAllProviders()
       })
       .catch(error => console.error(`Error in fetch: ${error.message}`));
     } else {
       this.setState({ errors: errors })
     }
+  }
+
+  fetchAllProviders() {
+    fetch('/api/v1/providers', {
+      credentials: 'same-origin',
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        let errorMessage = `${response.status} (${response.statusText})`,
+          error = new Error(errorMessage);
+        throw(error);
+      }
+    })
+    .then(response => response.json())
+    .then(json => {
+      this.setState({ providers: json })
+    })
+    .catch(error => console.error(`Error in fetch: ${error.message}`))
+  }
+
+  componentDidMount() {
+    this.fetchAllProviders()
   }
 
   render() {
@@ -84,6 +113,16 @@ class ProvidersFormAndIndexContainer extends Component {
       })
       errorClass = 'panel alert'
     }
+
+    let providerClass = ''
+    let providerList
+    if(this.state.providers.length > 0) {
+      providerList = this.state.providers.map((provider, index) => {
+        return <li key={index}><strong>Name:</strong> {provider.name} <ol><strong>Type:</strong> {provider.provider_type}</ol><br /></li>
+      })
+      providerClass = 'row panel small-8 small-centered columns'
+    }
+
     return(
       <div className='row panel small-8 small-centered columns'>
         <div className={errorClass}>{errorList}</div>
@@ -95,6 +134,11 @@ class ProvidersFormAndIndexContainer extends Component {
             name={this.state.name}
             type={this.state.type}
           />
+        </div>
+        <div className={providerClass}>
+          <ul>
+            {providerList}
+          </ul>
         </div>
       </div>
     )

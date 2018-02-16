@@ -2,7 +2,7 @@ class Api::V1::ProvidersController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:index, :create]
 
   def index
-    providers = Provider.all
+    providers = Provider.where(user: current_user)
 
     render json: providers
   end

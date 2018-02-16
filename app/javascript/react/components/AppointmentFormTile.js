@@ -18,7 +18,7 @@ const AppointmentFormTile = (props) => {
           </select>
         </label>
 
-        <label>Date:
+        <label className='small-6 large-6 columns'>Date:
           <div>
             <Datetime
               timeFormat={false}
@@ -28,7 +28,7 @@ const AppointmentFormTile = (props) => {
           </div>
         </label>
 
-        <label>Time:
+        <label className='small-6 large-6 columns'>Time:
           <div>
             <Datetime
               dateFormat={false}

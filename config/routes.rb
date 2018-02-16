@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :prescriptions, only: [:index, :create]
       resources :providers, only: [:index, :create]
-      resources :appointments, only: [:create]
+      resources :appointments, only: [:index, :create]
       resources :wellness_checks, only: [:index, :create]
     end
   end

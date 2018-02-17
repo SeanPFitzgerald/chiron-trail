@@ -1,5 +1,6 @@
 import React from 'react'
 import BackButton from './BackButton'
+import * as Datetime from 'react-datetime'
 
 const PrescriptionFormTile = (props) => {
   return(
@@ -14,7 +15,44 @@ const PrescriptionFormTile = (props) => {
           <input type='text' value={props.dosage} onChange={props.changeDosage} />
         </label>
 
-        <label>(Optional) Notes:
+        <label className='small-4 large-4 columns'>Date:
+          <div>
+            <Datetime
+              timeFormat={false}
+              onChange={props.changeDate}
+              defaultValue={props.defaultTime}
+            />
+          </div>
+        </label>
+
+        <label className='small-4 large-4 columns'>Time:
+          <div>
+            <Datetime
+              dateFormat={false}
+              onChange={props.changeTime}
+              defaultValue={props.defaultTime}
+            />
+          </div>
+        </label>
+
+        <label className='small-4 large-4 columns'>Rule:
+          <select onChange={props.changeRule}>
+            <option value='singular'>singular</option>
+            <option value='daily'>daily</option>
+            <option value='weekly'>weekly</option>
+            <option value='monthly'>monthly</option>
+          </select>
+        </label>
+
+        <label>Days of the Week:
+          <div className='days'>
+            <ul className='pagination'>
+              {props.daysCheckboxes}
+            </ul>
+          </div>
+        </label>
+
+        <label>(Optional) Enter Notes:
           <textarea value={props.notes} onChange={props.changeNotes} />
         </label>
 

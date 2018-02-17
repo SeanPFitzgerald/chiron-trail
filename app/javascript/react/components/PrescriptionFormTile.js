@@ -15,7 +15,7 @@ const PrescriptionFormTile = (props) => {
           <input type='text' value={props.dosage} onChange={props.changeDosage} />
         </label>
 
-        <label className='small-6 large-6 columns'>Date:
+        <label className='small-4 large-4 columns'>Date:
           <div>
             <Datetime
               timeFormat={false}
@@ -25,7 +25,7 @@ const PrescriptionFormTile = (props) => {
           </div>
         </label>
 
-        <label className='small-6 large-6 columns'>Time:
+        <label className='small-4 large-4 columns'>Time:
           <div>
             <Datetime
               dateFormat={false}
@@ -35,7 +35,7 @@ const PrescriptionFormTile = (props) => {
           </div>
         </label>
 
-        <label>Rule:
+        <label className='small-4 large-4 columns'>Rule:
           <select onChange={props.changeRule}>
             <option value='singular'>singular</option>
             <option value='daily'>daily</option>

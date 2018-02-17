@@ -54,7 +54,9 @@ class WellnessChecksFormContainer extends Component {
   }
 
   handleDateChange(date) {
-    this.setState({ selectedDate: date._d });
+    event.preventDefault()
+    const dateMoment = moment(new Date(`${date.year()}-${date.month()+1}-${date.date()} 00:00`))
+    this.setState({ selectedDate: dateMoment });
   }
 
   handleNotesChange(event) {
@@ -82,7 +84,7 @@ class WellnessChecksFormContainer extends Component {
   handleSubmit(event) {
     event.preventDefault()
     const errors = this.errorCheck()
-
+    
     if(errors.length === 0) {
       const formPayload = {
         mood: this.state.mood,

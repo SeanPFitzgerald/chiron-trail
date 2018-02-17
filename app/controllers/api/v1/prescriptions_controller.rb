@@ -46,7 +46,7 @@ class Api::V1::PrescriptionsController < ApplicationController
 
     schedule_attributes = ActionController::Parameters.new("date(1i)"=>pp['date(1i)'],
       "date(2i)"=>pp['date(2i)'], "date(3i)"=>pp['date(3i)'], "time(1i)"=>pp['time(1i)'], "time(2i)"=>pp['time(2i)'],
-      "time(3i)"=>pp['time(3i)'], "time(4i)"=>(pp['time(4i)'].to_i+5).to_s, "time(5i)"=>pp['time(5i)'], "rule"=>pp['rule'],
+      "time(3i)"=>pp['time(3i)'], "time(4i)"=>pp['time(4i)'], "time(5i)"=>pp['time(5i)'], "rule"=>pp['rule'],
       "until"=>"", "count"=>"0", "interval"=>"1", "day"=>pp['day'],
       "day_of_week"=>day_of_week).permit!
 

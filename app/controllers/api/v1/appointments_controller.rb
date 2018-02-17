@@ -40,7 +40,7 @@ class Api::V1::AppointmentsController < ApplicationController
 
     schedule_attributes = ActionController::Parameters.new("date(1i)"=>ap['date(1i)'],
       "date(2i)"=>ap['date(2i)'], "date(3i)"=>ap['date(3i)'], "time(1i)"=>ap['time(1i)'], "time(2i)"=>ap['time(2i)'],
-      "time(3i)"=>ap['time(3i)'], "time(4i)"=>(ap['time(4i)'].to_i+5).to_s, "time(5i)"=>ap['time(5i)'], "rule"=>ap['rule'],
+      "time(3i)"=>ap['time(3i)'], "time(4i)"=>ap['time(4i)'], "time(5i)"=>ap['time(5i)'], "rule"=>ap['rule'],
       "until"=>"", "count"=>"0", "interval"=>"1", "day"=>ap['day'],
       "day_of_week"=>day_of_week).permit!
 

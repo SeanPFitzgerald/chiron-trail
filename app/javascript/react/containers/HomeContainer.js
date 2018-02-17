@@ -30,15 +30,17 @@ class HomeContainer extends Component {
   }
 
   changeFromDate(event) {
-    this.fetchNewChartData(event._d, this.state.toDate._d)
+    const fromDateMoment = moment(new Date(`${event.year()}-${event.month()+1}-${event.date()} 00:00`))
+    this.fetchNewChartData(fromDateMoment, this.state.toDate)
   }
 
   changeToDate(event) {
-    this.fetchNewChartData(this.state.fromDate._d, event._d)
+    const toDateMoment = moment(new Date(`${event.year()}-${event.month()+1}-${event.date()} 00:00`))
+    this.fetchNewChartData(this.state.fromDate, toDateMoment)
   }
 
   fetchNewChartData(fromDate, toDate) {
-    fetch(`/api/v1/wellness_checks?from=${fromDate}&to=${toDate}`, {
+    fetch(`/api/v1/wellness_checks?from=${fromDate.utc().toString()}&to=${toDate.utc().toString()}`, {
       credentials: 'same-origin',
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
@@ -60,8 +62,8 @@ class HomeContainer extends Component {
         energy: json.energy,
         sociability: json.sociability,
         clearMindedness: json.clearMindedness,
-        fromDate: moment(fromDate),
-        toDate: moment(toDate)
+        fromDate: fromDate,
+        toDate: toDate
        })
     })
     .catch(error => console.error(`Error in fetch: ${error.message}`))

@@ -42,15 +42,17 @@ class AppointmentsFormAndIndexContainer extends Component {
   }
 
   handleDateChange(event) {
-    this.setState({ selectedDate: event._d });
+    const dateMoment = moment(new Date(`${event.year()}-${event.month()+1}-${event.date()} 00:00`))
+    this.setState({ selectedDate: dateMoment })
   }
 
   handleTimeChange(event) {
-    this.setState({ selectedTime: event._d });
+    const timeMoment = moment(new Date(`${event.year()}-${event.month()+1}-${event.date()} ${event.hour()}:${event.minute()}`))
+    this.setState({ selectedTime: timeMoment })
   }
 
   handleRuleChange(event) {
-    this.setState({ rule: event.target.value });
+    this.setState({ rule: event.target.value })
   }
 
 
@@ -117,18 +119,20 @@ class AppointmentsFormAndIndexContainer extends Component {
       let days = this.state.selectedDays.map(day => {
         return day.toLowerCase()
       })
+      const momentDate = this.state.selectedDate.utc()
+      const momentTime = this.state.selectedTime.utc()
       const formPayload = {
         appointment: {
           name: this.state.name,
           provider: this.state.selectedProvider,
-          'date(1i)': (moment(this.state.selectedDate).year()).toString(),
-          'date(2i)': (moment(this.state.selectedDate).month() + 1).toString(),
-          'date(3i)': (moment(this.state.selectedDate).date()).toString(),
-          'time(1i)': (moment(this.state.selectedDate).year()).toString(),
-          'time(2i)': (moment(this.state.selectedDate).month() + 1).toString(),
-          'time(3i)': (moment(this.state.selectedDate).date()).toString(),
-          'time(4i)': (moment(this.state.selectedTime).hour()).toString(),
-          'time(5i)': (moment(this.state.selectedTime).minute()).toString(),
+          'date(1i)': momentDate.year().toString(),
+          'date(2i)': (momentDate.month() + 1).toString(),
+          'date(3i)': momentDate.date().toString(),
+          'time(1i)': momentDate.year().toString(),
+          'time(2i)': (momentDate.month() + 1).toString(),
+          'time(3i)': momentDate.date().toString(),
+          'time(4i)': momentTime.hour().toString(),
+          'time(5i)': momentTime.minute().toString(),
           day: days,
           rule: this.state.rule,
           notes: this.state.notes
@@ -153,10 +157,13 @@ class AppointmentsFormAndIndexContainer extends Component {
       .then(response => {
         this.setState({
           name: '',
-          selectedProvider: null,
-          selectedDate: null,
-          selectedTime: null,
           notes: '',
+          appointments: [],
+          defaultTime: moment('12', 'HH'),
+          selectedDate: moment(),
+          selectedTime: moment('12', 'HH'),
+          selectedDays: [""],
+          rule: 'singular',
           errors: []
         })
         this.fetchAllAppointments()
@@ -236,14 +243,15 @@ class AppointmentsFormAndIndexContainer extends Component {
         if (appointment.notes === null || appointment.notes === '') {
           appointment.notes = 'None'
         }
-
+        const date = moment(appointment.schedule.date)
+        const time = moment(appointment.schedule.time)
         return <div key={index}>
                  <li>
                    <strong>Description:</strong> {appointment.name}
                    <span className='floatRight'><strong>Provider:</strong> {appointment.provider.name}</span>
                    <ol>
-                     Sart Date: {moment(appointment.schedule.date).format('ddd, MMM Do YYYY')}<br />
-                     Time: {moment(appointment.schedule.time).format('h:mm a')}<br />
+                     Start Date: {date.format('ddd, MMM Do YYYY')}<br />
+                     Time: {time.format('h:mm a')}<br />
                      Notes: {appointment.notes}<br />
                    </ol>
                  </li><br />

@@ -60,15 +60,17 @@ class PrescriptionsFormAndIndexContainer extends Component {
   }
 
   handleDateChange(event) {
-    this.setState({ selectedDate: event._d });
+    const dateMoment = moment(new Date(`${event.year()}-${event.month()+1}-${event.date()} 00:00`))
+    this.setState({ selectedDate: dateMoment })
   }
 
   handleTimeChange(event) {
-    this.setState({ selectedTime: event._d });
+    const timeMoment = moment(new Date(`${event.year()}-${event.month()+1}-${event.date()} ${event.hour()}:${event.minute()}`))
+    this.setState({ selectedTime: timeMoment })
   }
 
   handleRuleChange(event) {
-    this.setState({ rule: event.target.value });
+    this.setState({ rule: event.target.value })
   }
 
   toggleCheckboxClick(event) {
@@ -119,21 +121,22 @@ class PrescriptionsFormAndIndexContainer extends Component {
       let days = this.state.selectedDays.map(day => {
         return day.toLowerCase()
       })
-      debugger
+      const momentDate = this.state.selectedDate.utc()
+      const momentTime = this.state.selectedTime.utc()
       const formPayload = {
         medication: {
           name: this.state.name,
           dosage: this.state.dosage,
         },
         prescription: {
-          'date(1i)': (moment(this.state.selectedDate).year()).toString(),
-          'date(2i)': (moment(this.state.selectedDate).month() + 1).toString(),
-          'date(3i)': (moment(this.state.selectedDate).date()).toString(),
-          'time(1i)': (moment(this.state.selectedDate).year()).toString(),
-          'time(2i)': (moment(this.state.selectedDate).month() + 1).toString(),
-          'time(3i)': (moment(this.state.selectedDate).date()).toString(),
-          'time(4i)': (moment(this.state.selectedTime).hour()).toString(),
-          'time(5i)': (moment(this.state.selectedTime).minute()).toString(),
+          'date(1i)': momentDate.year().toString(),
+          'date(2i)': (momentDate.month() + 1).toString(),
+          'date(3i)': momentDate.date().toString(),
+          'time(1i)': momentDate.year().toString(),
+          'time(2i)': (momentDate.month() + 1).toString(),
+          'time(3i)': momentDate.date().toString(),
+          'time(4i)': momentTime.hour().toString(),
+          'time(5i)': momentTime.minute().toString(),
           day: days,
           rule: this.state.rule,
           notes: this.state.notes
@@ -159,10 +162,13 @@ class PrescriptionsFormAndIndexContainer extends Component {
         this.setState({
           name: '',
           dosage: '',
-          selectedProvider: null,
-          selectedDate: null,
-          selectedTime: null,
           notes: '',
+          prescriptions: [],
+          defaultTime: moment('12', 'HH'),
+          selectedDate: moment(),
+          selectedTime: moment('12', 'HH'),
+          selectedDays: [""],
+          rule: 'daily',
           errors: []
         })
         this.fetchAllPrescriptions()
@@ -216,12 +222,14 @@ class PrescriptionsFormAndIndexContainer extends Component {
     let prescriptionTitle = ''
     if(this.state.prescriptions.length > 0) {
       prescriptionList = this.state.prescriptions.map((prescription, index) => {
+        const date = moment(prescription.schedule.date)
+        const time = moment(prescription.schedule.time)
         return <li key={index}>
                  <strong>Name:</strong> {prescription.medication.name}<br />
                  <strong>Dosage:</strong> {prescription.medication.dosage}
                  <ol>
-                   Start Date: {moment(prescription.schedule.date).format('ddd, MMM Do YYYY')}<br />
-                   Time: {moment(prescription.schedule.time).format('h:mm a')}<br />
+                   Start Date: {date.format('ddd, MMM Do YYYY')}<br />
+                   Time: {time.format('h:mm a')}<br />
                    Notes: {prescription.notes}
                  </ol>
                </li>

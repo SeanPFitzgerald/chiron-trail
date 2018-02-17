@@ -80,10 +80,10 @@ class AppointmentsFormAndIndexContainer extends Component {
     let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
     return days.map((day, index) => {
-      let currentClassName = ''
+      let currentClassName = 'day'
 
       if(this.state.selectedDays.includes(day)) {
-        currentClassName = 'current'
+        currentClassName += ' current'
       }
 
       return <Checkbox

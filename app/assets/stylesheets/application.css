@@ -11,9 +11,9 @@
  * It is generally better to create a new file per style scope.
  *
  *= require_tree .
- *= require_self
  *= require c3
  *= require foundation_and_overrides
+ *= require_self
 
  */
 
@@ -25,16 +25,21 @@
   float: right;
 }
 
-.days {
-  align-content: center;
+ul.pagination li.day {
+  font-size: 1.3rem;
 }
 
-.pagination.li.font-size {
-  font-size: 30rem;
+ul.pagination li.graph-type {
+  font-size: 1.3rem;
 }
 
-.pagination.days {
+ul.pagination li.level {
+  margin-right: 1rem;
+  font-size: 2rem;
+}
 
+.levels {
+  margin-bottom: 2rem;
 }
 
 .floatRight {

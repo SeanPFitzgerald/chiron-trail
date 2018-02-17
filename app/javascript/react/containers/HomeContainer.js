@@ -109,10 +109,10 @@ class HomeContainer extends Component {
     let types = ['Line', 'Bar']
 
     return types.map((type, index) => {
-      let currentClassName = ''
+      let currentClassName = 'graph-type'
 
       if(this.state.graphType === type) {
-        currentClassName = 'current'
+        currentClassName += ' current'
       }
 
       return <Checkbox

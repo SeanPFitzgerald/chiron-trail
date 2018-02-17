@@ -15,34 +15,36 @@ const PrescriptionFormTile = (props) => {
           <input type='text' value={props.dosage} onChange={props.changeDosage} />
         </label>
 
-        <label className='small-4 large-4 columns'>Date:
-          <div>
-            <Datetime
-              timeFormat={false}
-              onChange={props.changeDate}
-              defaultValue={props.defaultTime}
-            />
-          </div>
-        </label>
+        <div className='row'>
+          <label className='small-4 large-4 columns'>Date:
+            <div>
+              <Datetime
+                timeFormat={false}
+                onChange={props.changeDate}
+                defaultValue={props.defaultTime}
+              />
+            </div>
+          </label>
 
-        <label className='small-4 large-4 columns'>Time:
-          <div>
-            <Datetime
-              dateFormat={false}
-              onChange={props.changeTime}
-              defaultValue={props.defaultTime}
-            />
-          </div>
-        </label>
+          <label className='small-4 large-4 columns'>Time:
+            <div>
+              <Datetime
+                dateFormat={false}
+                onChange={props.changeTime}
+                defaultValue={props.defaultTime}
+              />
+            </div>
+          </label>
 
-        <label className='small-4 large-4 columns'>Rule:
-          <select onChange={props.changeRule}>
-            <option value='singular'>singular</option>
-            <option value='daily'>daily</option>
-            <option value='weekly'>weekly</option>
-            <option value='monthly'>monthly</option>
-          </select>
-        </label>
+          <label className='small-4 large-4 columns'>Rule:
+            <select onChange={props.changeRule}>
+              <option value='singular'>singular</option>
+              <option value='daily'>daily</option>
+              <option value='weekly'>weekly</option>
+              <option value='monthly'>monthly</option>
+            </select>
+          </label>
+        </div>
 
         <label>Days of the Week:
           <div className='days'>

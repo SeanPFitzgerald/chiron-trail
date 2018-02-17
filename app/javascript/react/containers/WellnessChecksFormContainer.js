@@ -32,10 +32,10 @@ class WellnessChecksFormContainer extends Component {
     let valueRange = Array.from(new Array(5),(val,index)=>index+1)
 
     return valueRange.map(num => {
-      let currentClassName = ''
+      let currentClassName = 'level'
 
       if(this.state[levelId] === num) {
-        currentClassName = 'current'
+        currentClassName += ' current'
       }
 
       return <Checkbox
@@ -149,19 +149,19 @@ class WellnessChecksFormContainer extends Component {
           <h3>Enter Wellness Check</h3>
           <form onSubmit={this.handleSubmit}>
             Mood:
-            <ul className='pagination'>
+            <ul className='levels pagination'>
               {moodCheckboxes}
             </ul>
             Energy:
-            <ul className='pagination'>
+            <ul className='levels pagination'>
               {energyCheckboxes}
             </ul>
             Sociability:
-            <ul className='pagination'>
+            <ul className='levels pagination'>
               {sociabilityCheckboxes}
             </ul>
             Clear Mindedness:
-            <ul className='pagination'>
+            <ul className='levels pagination'>
               {cmCheckboxes}
             </ul>
             <label>

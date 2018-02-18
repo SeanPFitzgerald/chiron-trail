@@ -233,7 +233,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
           name: '',
           dosage: '',
           notes: '',
-          prescriptions: [],
+          prescriptions: json,
           defaultTime: moment('12', 'HH'),
           selectedDate: moment(),
           selectedTime: moment('12', 'HH'),
@@ -241,7 +241,6 @@ class PrescriptionsFormAndIndexContainer extends Component {
           rule: 'singular',
           errors: []
         })
-        this.fetchAllPrescriptions()
       })
       .catch(error => console.error(`Error in fetch: ${error.message}`))
     } else {

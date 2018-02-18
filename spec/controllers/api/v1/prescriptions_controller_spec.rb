@@ -7,8 +7,8 @@ RSpec.describe Api::V1::PrescriptionsController, type: :request do
   let!(:valid_params) do
     {
       medication: {
-        name: "med",
-        dosage: "dose"
+        name: 'med',
+        dosage: 'dose'
       },
       prescription: {
         'date(1i)': date.year,
@@ -20,7 +20,7 @@ RSpec.describe Api::V1::PrescriptionsController, type: :request do
         'time(4i)': date.hour,
         'time(5i)': date.minute,
         interval: '1',
-        day: ["", 'monday', 'friday'],
+        day: ['', 'monday', 'friday'],
         count: 0,
         rule: 'weekly',
         notes: 'testing notes'
@@ -43,21 +43,22 @@ RSpec.describe Api::V1::PrescriptionsController, type: :request do
 
       it 'creates a new prescription' do
         expect { post api_v1_prescriptions_path, params: valid_params }.to change(Prescription, :count).by(+1)
+        expect { post api_v1_prescriptions_path, params: valid_params }.to change(Schedule, :count).by(+1)
         expect(response).to have_http_status :created
-        expect(response.content_type).to eq("application/json")
+        expect(response.content_type).to eq('application/json')
       end
 
-      it 'returns the json of a new prescription' do
+      it "returns the json of all the user's prescriptions" do
         post api_v1_prescriptions_path, params: valid_params
 
         returned_json = JSON.parse(response.body)
 
-        expect(returned_json).to be_kind_of(Hash)
-        expect(returned_json).to_not be_kind_of(Array)
+        expect(returned_json).to be_kind_of(Array)
+        expect(returned_json).to_not be_kind_of(Hash)
 
-        expect(returned_json["prescription"]["user_id"]).to eq user.id
-        expect(returned_json["prescription"]["medication_id"]).to eq (medication.id + 1)
-        expect(returned_json["prescription"]["notes"]).to eq valid_params[:prescription][:notes]
+        expect(returned_json[-1]['user_id']).to eq user.id
+        expect(returned_json[-1]['medication_id']).to eq (medication.id + 1)
+        expect(returned_json[-1]['notes']).to eq valid_params[:prescription][:notes]
       end
 
       it 'creates prescription with the correct attributes' do
@@ -75,7 +76,7 @@ RSpec.describe Api::V1::PrescriptionsController, type: :request do
         post api_v1_prescriptions_path, params: invalid_params
 
         expect(response.status).to eq 422
-        expect(response.content_type).to eq("application/json")
+        expect(response.content_type).to eq('application/json')
 
         returned_json = JSON.parse(response.body)
 
@@ -87,7 +88,7 @@ RSpec.describe Api::V1::PrescriptionsController, type: :request do
         post api_v1_prescriptions_path, params: valid_params
 
         expect(response.status).to eq 422
-        expect(response.content_type).to eq("application/json")
+        expect(response.content_type).to eq('application/json')
 
         returned_json = JSON.parse(response.body)
 

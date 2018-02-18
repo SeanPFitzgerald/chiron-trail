@@ -21,7 +21,8 @@ const PrescriptionFormTile = (props) => {
               <Datetime
                 timeFormat={false}
                 onChange={props.changeDate}
-                defaultValue={props.defaultTime}
+                defaultValue={props.selectedDate}
+                value={props.selectedDate}
               />
             </div>
           </label>
@@ -37,9 +38,11 @@ const PrescriptionFormTile = (props) => {
           </label>
 
           <label className='small-4 large-4 columns'>Rule:
-            <select onChange={props.changeRule}>
+            <select onChange={props.changeRule} value={props.defaultRule}>
+              <option value='' disabled></option>
               <option value='singular'>singular</option>
               <option value='daily'>daily</option>
+              <option value='custom'>weekly (custom)</option>
               <option value='weekly'>weekly</option>
               <option value='monthly'>monthly</option>
             </select>

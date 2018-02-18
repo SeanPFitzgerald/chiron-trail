@@ -15,8 +15,8 @@ class PrescriptionsFormAndIndexContainer extends Component {
       defaultTime: moment('12', 'HH'),
       selectedDate: moment(),
       selectedTime: moment('12', 'HH'),
-      selectedDays: [""],
-      rule: 'daily',
+      selectedDays: ['', moment().format('dddd')],
+      rule: 'singular',
       errors: []
     }
     this.handleNameChange = this.handleNameChange.bind(this)
@@ -49,10 +49,10 @@ class PrescriptionsFormAndIndexContainer extends Component {
     const dosage = this.state.dosage
     let errors = []
 
-    if(name === undefined || name === null || name === '') {
+    if (name === undefined || name === null || name === '') {
       errors.push('Must enter a medication name!')
     }
-    if(dosage === undefined || dosage === null || dosage === '') {
+    if (dosage === undefined || dosage === null || dosage === '') {
       errors.push('Must enter a medication dosage!')
     }
 
@@ -61,7 +61,33 @@ class PrescriptionsFormAndIndexContainer extends Component {
 
   handleDateChange(event) {
     const dateMoment = moment(new Date(`${event.year()}-${event.month()+1}-${event.date()} 00:00`))
-    this.setState({ selectedDate: dateMoment })
+    const dateDay = dateMoment.format('dddd')
+
+    if (this.state.rule === 'custom') {
+      if (this.state.selectedDays.includes(dateDay)) {
+        this.setState({ selectedDate: dateMoment })
+      } else if (this.state.selectedDays.length <= 2){
+        this.setState({ selectedDate: dateMoment, selectedDays: ['', dateDay], rule: 'singular' })
+      } else if (this.state.selectedDays.length === 7) {
+        this.setState({ selectedDate: dateMoment, selectedDays: this.state.selectedDays.concat(dateDay), rule: 'daily' })
+      } else {
+        this.setState({ selectedDate: dateMoment, selectedDays: this.state.selectedDays.concat(dateDay) })
+      }
+    } else if (this.state.rule === '') {
+      if (this.state.selectedDays.length === 8) {
+        this.setState({ selectedDate: dateMoment, rule: 'daily' })
+      } else if (this.state.selectedDays.length === 7) {
+        this.setState({ selectedDate: dateMoment, selectedDays: this.state.selectedDays.concat(dateDay), rule: 'daily' })
+      } else if (this.state.selectedDays.length > 1) {
+        this.setState({ selectedDate: dateMoment, selectedDays: this.state.selectedDays.concat(dateDay), rule: 'custom' })
+      } else {
+        this.setState({ selectedDate: dateMoment, selectedDays: ['', dateDay], rule: 'singular' })
+      }
+    } else if (this.state.rule === 'daily') {
+      this.setState({ selectedDate: dateMoment })
+    } else {
+      this.setState({ selectedDate: dateMoment, selectedDays: ['', dateDay] })
+    }
   }
 
   handleTimeChange(event) {
@@ -70,27 +96,67 @@ class PrescriptionsFormAndIndexContainer extends Component {
   }
 
   handleRuleChange(event) {
-    this.setState({ rule: event.target.value })
+    if (this.state.selectedDate !== '') {
+      const dateDay = this.state.selectedDate.format('dddd')
+      const rule = event.target.value
+
+      if (rule === 'daily') {
+        this.setState({ rule: rule, selectedDays: ['', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] })
+      } else if (rule !== 'custom') {
+        this.setState({ rule: rule, selectedDays: ['', dateDay] })
+      } else {
+        this.setState({ rule: rule })
+      }
+    } else if (rule === 'daily') {
+      this.setState({ rule: rule, selectedDays: ['', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] })
+    }
   }
 
   toggleCheckboxClick(event) {
     event.preventDefault()
 
-    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    const selected = this.state.selectedDays
     let newDays = []
 
-    if(this.state.selectedDays.includes(event.target.id)) {
-      newDays = this.state.selectedDays.filter(day => {
+    if (selected.includes(event.target.id)) {
+      newDays = selected.filter(day => {
         return day != event.target.id
       })
     } else {
       newDays = days.filter(day => {
-        return (this.state.selectedDays.includes(day) || day == event.target.id)
+        return (selected.includes(day) || day == event.target.id)
       })
-      newDays.unshift("")
+      newDays.unshift('')
     }
 
-    this.setState({ selectedDays: newDays })
+    if (this.state.selectedDate === '') {
+      if (newDays.length === 8) {
+        this.setState({ selectedDays: newDays, selectedDate: moment(), rule: 'daily' })
+      } else {
+        this.setState({ selectedDays: newDays, rule: '' })
+      }
+    } else {
+      if (newDays.includes(this.state.selectedDate.format('dddd'))) {
+        if (newDays.length === 8) {
+          this.setState({ selectedDays: newDays, rule: 'daily' })
+        } else if (newDays.length === 2) {
+          if (this.state.rule === 'custom') {
+            this.setState({ selectedDays: newDays, rule: 'weekly' })
+          } else {
+            this.setState({ selectedDays: newDays })
+          }
+        } else if (newDays.length === 1) {
+          this.setState({ selectedDays: newDays, rule: '' })
+        } else {
+          this.setState({ selectedDays: newDays, rule: 'custom' })
+        }
+      } else if (newDays.length === 1) {
+        this.setState({ selectedDays: [''], selectedDate: '', rule: '' })
+      } else {
+        this.setState({ selectedDays: newDays, rule: 'custom', selectedDate: '', rule: '' })
+      }
+    }
   }
 
   createCheckboxes() {
@@ -99,7 +165,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
     return days.map((day, index) => {
       let currentClassName = 'day'
 
-      if(this.state.selectedDays.includes(day)) {
+      if (this.state.selectedDays.includes(day)) {
         currentClassName += ' current'
       }
 
@@ -123,6 +189,10 @@ class PrescriptionsFormAndIndexContainer extends Component {
       })
       const momentDate = this.state.selectedDate.utc()
       const momentTime = this.state.selectedTime.utc()
+      let rule = this.state.rule
+      if (rule === 'custom') {
+        rule = 'weekly'
+      }
       const formPayload = {
         medication: {
           name: this.state.name,
@@ -138,7 +208,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
           'time(4i)': momentTime.hour().toString(),
           'time(5i)': momentTime.minute().toString(),
           day: days,
-          rule: this.state.rule,
+          rule: rule,
           notes: this.state.notes
         }
       }
@@ -167,8 +237,8 @@ class PrescriptionsFormAndIndexContainer extends Component {
           defaultTime: moment('12', 'HH'),
           selectedDate: moment(),
           selectedTime: moment('12', 'HH'),
-          selectedDays: [""],
-          rule: 'daily',
+          selectedDays: ['', moment().format('dddd')],
+          rule: 'singular',
           errors: []
         })
         this.fetchAllPrescriptions()
@@ -208,7 +278,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
   render() {
     let errorClass = ''
     let errorList
-    if(this.state.errors.length > 0) {
+    if (this.state.errors.length > 0) {
       errorList = this.state.errors.map((error, index) => {
         return <li key={index}>{error}</li>
       })
@@ -220,7 +290,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
     let prescriptionClass = ''
     let prescriptionList
     let prescriptionTitle = ''
-    if(this.state.prescriptions.length > 0) {
+    if (this.state.prescriptions.length > 0) {
       prescriptionList = this.state.prescriptions.map((prescription, index) => {
         const date = moment(prescription.schedule.date)
         const time = moment(prescription.schedule.time)
@@ -251,9 +321,11 @@ class PrescriptionsFormAndIndexContainer extends Component {
               changeNotes={this.handleNotesChange}
               name={this.state.name}
               dosage={this.state.dosage}
+              selectedDate={this.state.selectedDate}
               changeDate={this.handleDateChange}
               defaultTime={this.state.defaultTime}
               changeTime={this.handleTimeChange}
+              defaultRule={this.state.rule}
               changeRule={this.handleRuleChange}
               daysCheckboxes={weekCheckboxes}
               notes={this.state.notes}

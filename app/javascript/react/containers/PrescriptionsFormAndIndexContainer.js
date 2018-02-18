@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PrescriptionFormTile from '../components/PrescriptionFormTile'
+import PrescriptionIndexTile from '../components/PrescriptionIndexTile'
 import Checkbox from '../components/Checkbox'
 import NavBar from '../components/NavBar'
 import moment from 'moment'
@@ -27,6 +28,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
     this.handleRuleChange = this.handleRuleChange.bind(this)
     this.toggleCheckboxClick = this.toggleCheckboxClick.bind(this)
     this.createCheckboxes = this.createCheckboxes.bind(this)
+    this.createPrescriptionIndex = this.createPrescriptionIndex.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.fetchAllPrescriptions = this.fetchAllPrescriptions.bind(this)
@@ -274,6 +276,40 @@ class PrescriptionsFormAndIndexContainer extends Component {
     this.fetchAllPrescriptions()
   }
 
+  createPrescriptionIndex() {
+    let prescriptionClass = ''
+    let prescriptionList
+    let prescriptionTitle = ''
+    if (this.state.prescriptions.length > 0) {
+      prescriptionList = this.state.prescriptions.map((prescription, index) => {
+        const date = moment(prescription.schedule.date)
+        const time = moment(prescription.schedule.time)
+        return(
+          <PrescriptionIndexTile
+            key={index}
+            id={index}
+            name={prescription.medication.name}
+            dosage={prescription.medication.dosage}
+            date={date}
+            time={time}
+            note={prescription.notes}
+          />
+        )
+      })
+      prescriptionClass = 'row panel small-8 small-centered columns'
+      prescriptionTitle = 'Your Prescriptions:'
+    }
+
+    return(
+      <div className={prescriptionClass}>
+        <h4>{prescriptionTitle}</h4>
+        <ul>
+          {prescriptionList}
+        </ul>
+      </div>
+    )
+  }
+
   render() {
     let errorClass = ''
     let errorList
@@ -286,26 +322,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
 
     const weekCheckboxes = this.createCheckboxes()
 
-    let prescriptionClass = ''
-    let prescriptionList
-    let prescriptionTitle = ''
-    if (this.state.prescriptions.length > 0) {
-      prescriptionList = this.state.prescriptions.map((prescription, index) => {
-        const date = moment(prescription.schedule.date)
-        const time = moment(prescription.schedule.time)
-        return <li key={index}>
-                 <strong>Name:</strong> {prescription.medication.name}<br />
-                 <strong>Dosage:</strong> {prescription.medication.dosage}
-                 <ol>
-                   Start Date: {date.format('ddd, MMM Do YYYY')}<br />
-                   Time: {time.format('h:mm a')}<br />
-                   Notes: {prescription.notes}
-                 </ol>
-               </li>
-      })
-      prescriptionClass = 'row panel small-8 small-centered columns'
-      prescriptionTitle = 'Your Prescriptions:'
-    }
+
 
     return(
       <div>
@@ -331,12 +348,7 @@ class PrescriptionsFormAndIndexContainer extends Component {
             />
           </div>
         </div>
-        <div className={prescriptionClass}>
-          <h4>{prescriptionTitle}</h4>
-          <ul>
-            {prescriptionList}
-          </ul>
-        </div>
+        {this.createPrescriptionIndex()}
       </div>
     )
   }

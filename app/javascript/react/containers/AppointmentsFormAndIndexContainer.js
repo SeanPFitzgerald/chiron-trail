@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import AppointmentFormTile from '../components/AppointmentFormTile'
+import AppointmentIndexTile from '../components/AppointmentIndexTile'
 import Checkbox from '../components/Checkbox'
 import NavBar from '../components/NavBar'
 import moment from 'moment'
@@ -27,6 +28,7 @@ class AppointmentsFormAndIndexContainer extends Component {
     this.handleRuleChange = this.handleRuleChange.bind(this)
     this.toggleCheckboxClick = this.toggleCheckboxClick.bind(this)
     this.createCheckboxes = this.createCheckboxes.bind(this)
+    this.createAppointmentIndex = this.createAppointmentIndex.bind(this)
     this.handleNotesChange = this.handleNotesChange.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -291,6 +293,45 @@ class AppointmentsFormAndIndexContainer extends Component {
     .catch(error => console.error(`Error in fetch: ${error.message}`))
   }
 
+  createAppointmentIndex() {
+    let appointmentClass = ''
+    let appointmentList
+    let appointmentTitle = ''
+    if (this.state.appointments.length > 0) {
+      appointmentList = this.state.appointments.map((appointment, index) => {
+        if (appointment.name === null || appointment.name === '') {
+          appointment.name = 'None'
+        }
+        if (appointment.notes === null || appointment.notes === '') {
+          appointment.notes = 'None'
+        }
+        const date = moment(appointment.schedule.date).format('ddd, MMM Do YYYY')
+        const time = moment(appointment.schedule.time).format('h:mm a')
+        return(
+          <AppointmentIndexTile
+            key={index}
+            appointmentName={appointment.name}
+            providerName={appointment.provider.name}
+            date={date}
+            time={time}
+            notes={appointment.notes}
+          />
+        )
+      })
+      appointmentClass = 'row panel small-8 small-centered columns'
+      appointmentTitle = 'Your Appointments:'
+    }
+
+    return(
+      <div className={appointmentClass}>
+        <h4>{appointmentTitle}</h4>
+        <ul>
+          {appointmentList}
+        </ul>
+      </div>
+    )
+  }
+
   render() {
     let errorClass = ''
     let errorList
@@ -303,34 +344,6 @@ class AppointmentsFormAndIndexContainer extends Component {
 
     const weekCheckboxes = this.createCheckboxes()
 
-    let appointmentClass = ''
-    let appointmentList
-    let appointmentTitle = ''
-    if (this.state.appointments.length > 0) {
-      appointmentList = this.state.appointments.map((appointment, index) => {
-        if (appointment.name === null || appointment.name === '') {
-          appointment.name = 'None'
-        }
-        if (appointment.notes === null || appointment.notes === '') {
-          appointment.notes = 'None'
-        }
-        const date = moment(appointment.schedule.date)
-        const time = moment(appointment.schedule.time)
-        return <div key={index}>
-                 <li>
-                   <strong>Description:</strong> {appointment.name}
-                   <span className='floatRight'><strong>Provider:</strong> {appointment.provider.name}</span>
-                   <ol>
-                     Start Date: {date.format('ddd, MMM Do YYYY')}<br />
-                     Time: {time.format('h:mm a')}<br />
-                     Notes: {appointment.notes}<br />
-                   </ol>
-                 </li><br />
-               </div>
-      })
-      appointmentClass = 'row panel small-8 small-centered columns'
-      appointmentTitle = 'Your Appointments:'
-    }
 
     return(
       <div>
@@ -357,12 +370,7 @@ class AppointmentsFormAndIndexContainer extends Component {
             />
           </div>
         </div>
-        <div className={appointmentClass}>
-          <h4>{appointmentTitle}</h4>
-          <ul>
-            {appointmentList}
-          </ul>
-        </div>
+        {this.createAppointmentIndex()}
       </div>
     )
   }

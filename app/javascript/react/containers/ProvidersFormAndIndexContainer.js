@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ProviderFormTile from '../components/ProviderFormTile'
+import ProviderIndexTile from '../components/ProviderIndexTile'
 import NavBar from '../components/NavBar'
 
 class ProvidersFormAndIndexContainer extends Component {
@@ -16,6 +17,7 @@ class ProvidersFormAndIndexContainer extends Component {
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.fetchAllProviders = this.fetchAllProviders.bind(this)
+    this.createProviderIndex = this.createProviderIndex.bind(this)
   }
 
   handleNameChange(event) {
@@ -106,6 +108,35 @@ class ProvidersFormAndIndexContainer extends Component {
     this.fetchAllProviders()
   }
 
+  createProviderIndex() {
+    let providerClass = ''
+    let providerList
+    let providerTitle = ''
+    if(this.state.providers.length > 0) {
+      providerList = this.state.providers.map((provider, index) => {
+        return(
+          <ProviderIndexTile
+            key={index}
+            id={index}
+            name={provider.name}
+            providerType={provider.provider_type}
+          />
+        )
+      })
+      providerClass = 'row panel small-8 small-centered columns'
+      providerTitle = 'Your Providers:'
+    }
+
+    return(
+      <div className={providerClass}>
+        <h4>{providerTitle}</h4>
+        <ul>
+          {providerList}
+        </ul>
+      </div>
+    )
+  }
+
   render() {
     let errorClass = ''
     let errorList
@@ -114,17 +145,6 @@ class ProvidersFormAndIndexContainer extends Component {
         return <li key={index}>{error}</li>
       })
       errorClass = 'panel alert'
-    }
-
-    let providerClass = ''
-    let providerList
-    let providerTitle = ''
-    if(this.state.providers.length > 0) {
-      providerList = this.state.providers.map((provider, index) => {
-        return <li key={index}><strong>Name:</strong> {provider.name} <ol><strong>Type:</strong> {provider.provider_type}</ol><br /></li>
-      })
-      providerClass = 'row panel small-8 small-centered columns'
-      providerTitle = 'Your Providers:'
     }
 
     return(
@@ -142,12 +162,7 @@ class ProvidersFormAndIndexContainer extends Component {
             />
           </div>
         </div>
-        <div className={providerClass}>
-          <h4>{providerTitle}</h4>
-          <ul>
-            {providerList}
-          </ul>
-        </div>
+        {this.createProviderIndex()}
       </div>
     )
   }

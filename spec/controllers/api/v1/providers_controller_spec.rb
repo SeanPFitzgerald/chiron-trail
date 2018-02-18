@@ -29,16 +29,16 @@ RSpec.describe Api::V1::ProvidersController, type: :request do
         expect(response.content_type).to eq('application/json')
       end
 
-      it 'returns the json of a new provider' do
+      it "returns the json of all the user's providers" do
         post api_v1_providers_path, params: valid_params
 
         returned_json = JSON.parse(response.body)
 
-        expect(returned_json).to be_kind_of(Hash)
-        expect(returned_json).to_not be_kind_of(Array)
+        expect(returned_json).to be_kind_of(Array)
+        expect(returned_json).to_not be_kind_of(Hash)
 
-        expect(returned_json['provider']['name']).to eq valid_params[:provider][:name]
-        expect(returned_json['provider']['provider_type']).to eq valid_params[:provider][:provider_type]
+        expect(returned_json[-1]['name']).to eq valid_params[:provider][:name]
+        expect(returned_json[-1]['provider_type']).to eq valid_params[:provider][:provider_type]
       end
 
       it 'creates provider with the correct attributes' do

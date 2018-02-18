@@ -223,11 +223,11 @@ class AppointmentsFormAndIndexContainer extends Component {
         }
       })
       .then(response => response.json())
-      .then(response => {
+      .then(json => {
         this.setState({
           name: '',
           notes: '',
-          appointments: [],
+          appointments: json,
           defaultTime: moment('12', 'HH'),
           selectedDate: moment(),
           selectedTime: moment('12', 'HH'),
@@ -235,9 +235,8 @@ class AppointmentsFormAndIndexContainer extends Component {
           rule: 'singular',
           errors: []
         })
-        this.fetchAllAppointments()
       })
-      .catch(error => console.error(`Error in fetch: ${error.message}`));
+      .catch(error => console.error(`Error in fetch: ${error.message}`))
     } else {
       this.setState({ errors: errors })
     }

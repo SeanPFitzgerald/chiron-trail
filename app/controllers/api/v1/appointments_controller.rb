@@ -13,10 +13,8 @@ class Api::V1::AppointmentsController < ApplicationController
     appointment.provider = Provider.find(provider_params['id'])
 
     if appointment.save
-      render status: 201, json: {
-        message: "Successfully created new appointment.",
-        appointment: appointment
-      }.to_json
+      render status: 201, message: 'Successfully created new appointment.',
+        json: Appointment.where(user: current_user), include: [:schedule, :provider]
     else
       render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
     end

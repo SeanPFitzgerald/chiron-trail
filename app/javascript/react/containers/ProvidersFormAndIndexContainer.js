@@ -65,15 +65,16 @@ class ProvidersFormAndIndexContainer extends Component {
           throw(error);
         }
       })
-      .then(response => {
+      .then(response => response.json())
+      .then(json => {
         this.setState({
           name: '',
           type: '',
+          providers: json,
           errors: []
         })
-        this.fetchAllProviders()
       })
-      .catch(error => console.error(`Error in fetch: ${error.message}`));
+      .catch(error => console.error(`Error in fetch: ${error.message}`))
     } else {
       this.setState({ errors: errors })
     }

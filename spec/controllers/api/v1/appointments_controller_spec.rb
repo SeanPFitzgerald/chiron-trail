@@ -3,13 +3,17 @@
 # RSpec.describe Api::V1::AppointmentsController, type: :request do
 #   let!(:user) { FactoryBot.create(:user) }
 #   let!(:provider) { FactoryBot.create(:provider) }
-#   let!(:date) { DateTime.now + 5 }
+#   let!(:date) { DateTime.now }
 #
 #   let!(:valid_params) do
 #     {
 #       appointment: {
 #         name: 'Name',
-#         provider: provider,
+#         provider: {
+#           id: Provider.last.id,
+#           name: 'Dr. Smith',
+#           provider_type: 'GP'
+#         },
 #         'date(1i)': date.year,
 #         'date(2i)': date.month,
 #         'date(3i)': date.day,
@@ -19,16 +23,16 @@
 #         'time(4i)': date.hour,
 #         'time(5i)': date.minute,
 #         interval: '1',
-#         day: ["", 'monday', 'friday'],
+#         day: ['', 'monday', 'friday'],
 #         count: 0,
 #         rule: 'weekly',
-#         notes: "notes"
+#         notes: 'notes'
 #       }
 #     }
 #   end
 #   let!(:invalid_params) do
 #     {
-#       medication: {
+#       appointment: {
 #         name: nil,
 #         dosage: nil
 #       },
@@ -44,21 +48,21 @@
 #         expect { post api_v1_appointments_path, params: valid_params }.to change(Appointment, :count).by(+1)
 #         expect { post api_v1_appointments_path, params: valid_params }.to change(Schedule, :count).by(+1)
 #         expect(response).to have_http_status :created
-#         expect(response.content_type).to eq("application/json")
+#         expect(response.content_type).to eq('application/json')
 #       end
 #
-#       it 'returns the json of a new appointment' do
+#       it "returns the json of all the user's appointments" do
 #         post api_v1_appointments_path, params: valid_params
 #
 #         returned_json = JSON.parse(response.body)
 #
-#         expect(returned_json).to be_kind_of(Hash)
-#         expect(returned_json).to_not be_kind_of(Array)
+#         expect(returned_json).to be_kind_of(Array)
+#         expect(returned_json).to_not be_kind_of(Hash)
 #
-#         expect(returned_json['appointment']['user_id']).to eq user.id
-#         expect(returned_json['appointment']['provider_id']).to eq provider.id
-#         expect(returned_json['appointment']['name']).to eq valid_params[:name]
-#         expect(returned_json['appointment']['notes']).to eq valid_params[:notes]
+#         expect(returned_json[-1]['user_id']).to eq user.id
+#         expect(returned_json[-1]['provider_id']).to eq provider.id
+#         expect(returned_json[-1]['name']).to eq valid_params[:appointment][:name]
+#         expect(returned_json[-1]['notes']).to eq valid_params[:appointment][:notes]
 #       end
 #
 #       it 'creates appointment and schedule association with the correct attributes' do
@@ -66,16 +70,16 @@
 #
 #         expect(Appointment.last.user).to eq user
 #         expect(Appointment.last.provider).to eq provider
-#         expect(Appointment.last.name).to eq valid_params[:name]
-#         expect(Appointment.last.notes).to eq valid_params[:notes]
+#         expect(Appointment.last.name).to eq valid_params[:appointment][:name]
+#         expect(Appointment.last.notes).to eq valid_params[:appointment][:notes]
 #
 #         expect(Appointment.last.schedule.schedulable_type).to eq 'Appointment'
 #         expect(Appointment.last.schedule.date.to_s).to eq date.strftime('%Y-%m-%d')
 #         expect(Appointment.last.schedule.time.to_s).to eq date.strftime('%Y-%m-%d %H:%M:%S')+' UTC'
-#         expect(Appointment.last.schedule.rule).to eq valid_params[:rule]
-#         expect(Appointment.last.schedule.day).to eq valid_params[:day]
-#         expect(Appointment.last.schedule.interval).to eq valid_params[:interval]
-#         expect(Appointment.last.schedule.count).to eq valid_params[:count]
+#         expect(Appointment.last.schedule.rule).to eq valid_params[:appointment][:rule]
+#         expect(Appointment.last.schedule.day).to eq valid_params[:appointment][:day]
+#         expect(Appointment.last.schedule.interval).to eq valid_params[:appointment][:interval]
+#         expect(Appointment.last.schedule.count).to eq valid_params[:appointment][:count]
 #       end
 #     end
 #
@@ -102,7 +106,6 @@
 #         returned_json = JSON.parse(response.body)
 #
 #         expect(returned_json['error'][0]).to eq 'User must exist'
-#         expect(returned_json['error'][1]).to eq "User can't be blank"
 #       end
 #     end
 #   end

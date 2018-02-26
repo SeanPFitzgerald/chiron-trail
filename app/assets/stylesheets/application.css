@@ -38,12 +38,25 @@ ul.pagination li.level {
   font-size: 2rem;
 }
 
+.tile-title {
+  font-size: 1.2rem;
+  color: #AAAAAA;
+}
+
+.tile-info {
+  font-size: 1.2rem;
+}
+
 .levels {
   margin-bottom: 2rem;
 }
 
 .floatRight {
   float: right;
+}
+
+.floatLeft {
+  float: left;
 }
 
 .button-group {

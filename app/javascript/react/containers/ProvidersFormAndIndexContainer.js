@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import ProviderFormTile from '../components/ProviderFormTile'
 import ProviderIndexTile from '../components/ProviderIndexTile'
+import ProviderEditTile from '../components/ProviderEditTile'
 import NavBar from '../components/NavBar'
 
 class ProvidersFormAndIndexContainer extends Component {
@@ -10,12 +11,19 @@ class ProvidersFormAndIndexContainer extends Component {
       name: '',
       type: '',
       providers: [],
+      editedName: '',
+      editedType: '',
+      editNum: undefined,
       errors: []
     }
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleTypeChange = this.handleTypeChange.bind(this)
+    this.editNameChange = this.editNameChange.bind(this)
+    this.editTypeChange = this.editTypeChange.bind(this)
     this.checkErrors = this.checkErrors.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.editProvider = this.editProvider.bind(this)
+    this.updateTile = this.updateTile.bind(this)
     this.fetchAllProviders = this.fetchAllProviders.bind(this)
     this.createProviderIndex = this.createProviderIndex.bind(this)
   }
@@ -28,19 +36,85 @@ class ProvidersFormAndIndexContainer extends Component {
     this.setState({ type: event.target.value })
   }
 
+  editNameChange(event) {
+    this.setState({ editedName: event.target.value })
+  }
+
+  editTypeChange(event) {
+    this.setState({ editedType: event.target.value })
+  }
+
   checkErrors() {
     const name = this.state.name
     const type = this.state.type
     let errors = []
 
-    if(name === undefined || name === null || name === '') {
+    if (name === undefined || name === null || name === '') {
       errors.push('Must enter a provider name!')
     }
-    if(type === undefined || type === null || type === '') {
+    if (type === undefined || type === null || type === '') {
       errors.push('Must enter a provider type!')
     }
 
     return errors
+  }
+
+  checkEditErrors(name, type) {
+    let errors = []
+
+    if (name === undefined || name === null || name === '') {
+      errors.push('Must enter a provider name!')
+    }
+    if (type === undefined || type === null || type === '') {
+      errors.push('Must enter a provider type!')
+    }
+
+    return errors
+  }
+
+  updateTile(event) {
+    event.preventDefault()
+    const name = document.getElementById('providerEditTile').getElementsByTagName('input')[0].value
+    const type = document.getElementById('providerEditTile').getElementsByTagName('input')[1].value
+    const errors = this.checkEditErrors(name, type)
+
+    if (errors.length === 0 ) {
+      const formPayload = {
+        id: this.state.editNum,
+        name: name,
+        provider_type: type
+      }
+      fetch('/api/v1/providers?method=PATCH', {
+        credentials: 'same-origin',
+        method: 'POST',
+        body: JSON.stringify(formPayload),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          let errorMessage = `${response.status} (${response.statusText})`,
+            error = new Error(errorMessage);
+          throw(error);
+        }
+      })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({
+          name: '',
+          type: '',
+          editedName: '',
+          editedType: '',
+          editNum: undefined,
+          providers: json,
+          errors: []
+        })
+      })
+      .catch(error => console.error(`Error in fetch: ${error.message}`))
+    } else {
+      this.setState({ errors: errors })
+    }
   }
 
   handleSubmit(event) {
@@ -72,6 +146,9 @@ class ProvidersFormAndIndexContainer extends Component {
         this.setState({
           name: '',
           type: '',
+          editedName: '',
+          editedType: '',
+          editNum: undefined,
           providers: json,
           errors: []
         })
@@ -108,20 +185,43 @@ class ProvidersFormAndIndexContainer extends Component {
     this.fetchAllProviders()
   }
 
+  editProvider(event) {
+    event.preventDefault()
+    this.setState({ editNum: parseInt(event.target.id) })
+  }
+
   createProviderIndex() {
     let providerClass = ''
     let providerList
     let providerTitle = ''
-    if(this.state.providers.length > 0) {
+    if (this.state.providers.length > 0) {
       providerList = this.state.providers.map((provider, index) => {
-        return(
-          <ProviderIndexTile
-            key={index}
-            id={index}
-            name={provider.name}
-            providerType={provider.provider_type}
-          />
-        )
+        if (this.state.editNum !== undefined && provider.id === this.state.editNum) {
+          const name = (this.state.editedName === '') ? provider.name : this.state.editedName
+          const type = (this.state.editedType === '') ? provider.provider_type : this.state.editedType
+
+          return(
+            <ProviderEditTile
+              key={index}
+              id={provider.id}
+              name={name}
+              providerType={type}
+              changeName={this.editNameChange}
+              changeType={this.editTypeChange}
+              handleUpdate={this.updateTile}
+            />
+          )
+        } else {
+          return(
+            <ProviderIndexTile
+              key={index}
+              id={provider.id}
+              name={provider.name}
+              providerType={provider.provider_type}
+              handleEdit={this.editProvider}
+            />
+          )
+        }
       })
       providerClass = 'row panel small-8 small-centered columns'
       providerTitle = 'Your Providers:'
@@ -140,7 +240,7 @@ class ProvidersFormAndIndexContainer extends Component {
   render() {
     let errorClass = ''
     let errorList
-    if(this.state.errors.length > 0) {
+    if (this.state.errors.length > 0) {
       errorList = this.state.errors.map((error, index) => {
         return <li key={index}>{error}</li>
       })

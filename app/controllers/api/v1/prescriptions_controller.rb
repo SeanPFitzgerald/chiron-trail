@@ -8,28 +8,44 @@ class Api::V1::PrescriptionsController < ApplicationController
   end
 
   def create
-    med = Medication.find_or_initialize_by(medication_params)
+    if params[:method].nil?
+      med = Medication.find_or_initialize_by(medication_params)
 
-    if !med.id.nil? || med.save
-      script = Prescription.new(construct_params)
-      script.user = current_user
-      script.medication = med
+      if !med.id.nil? || med.save
+        script = Prescription.new(construct_params)
+        script.user = current_user
+        script.medication = med
 
-      if script.save
-        render status: 201, message: 'Successfully created new prescription.',
-          json: Prescription.where(user: current_user), include: [:medication, :schedule]
+        if script.save
+          render status: 201, message: 'Successfully created new prescription.',
+            json: Prescription.where(user: current_user), include: [:medication, :schedule]
+        else
+          render json: { error: script.errors.full_messages }, status: :unprocessable_entity
+        end
       else
-        render json: { error: script.errors.full_messages }, status: :unprocessable_entity
+        render json: { error: med.errors.full_messages }, status: :unprocessable_entity
       end
-    else
-      render json: { error: med.errors.full_messages }, status: :unprocessable_entity
+    elsif params[:method] == 'PATCH'
+      med = Medication.find_or_initialize_by(medication_params)
+
+      if !med.id.nil? || med.save
+        script = Prescription.find(prescription_params[:id])
+        script.medication = med
+
+        if script.update(construct_params)
+          render status: 200, message: 'Successfully updated prescription.',
+            json: Prescription.where(user: current_user), include: [:medication, :schedule]
+        else
+          render json: { error: provider.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   private
 
   def prescription_params
-    params.require(:prescription).permit(:notes, :date, :time, :rule, day: [])
+    params.require(:prescription).permit(:id, :notes, :date, :time, :rule, day: [])
   end
 
   def medication_params

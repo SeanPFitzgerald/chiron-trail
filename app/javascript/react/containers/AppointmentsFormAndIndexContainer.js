@@ -520,7 +520,7 @@ class AppointmentsFormAndIndexContainer extends Component {
     .then(response => response.json())
     .then(json => {
       this.setState({
-        selectedProvider: json[0],
+        selectedProvider: json[0].id,
         providers: json
       })
       this.fetchAllAppointments()

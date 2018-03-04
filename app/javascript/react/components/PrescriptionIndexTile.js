@@ -40,6 +40,14 @@ const PrescriptionIndexTile = (props) => {
           </div>
           <div className='row'>
             <div className='small-3 large-3 columns'>
+              <strong className='tile-title right'>Day(s): </strong>
+            </div>
+            <div className='small-8 large-8 columns left'>
+              <span className='tile-info'>{props.days}</span><br />
+            </div>
+          </div>
+          <div className='row'>
+            <div className='small-3 large-3 columns'>
               <strong className='tile-title right'>Notes: </strong>
             </div>
             <div className='small-8 large-8 columns left'>

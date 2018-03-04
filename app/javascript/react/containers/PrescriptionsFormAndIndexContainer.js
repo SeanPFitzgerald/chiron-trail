@@ -584,8 +584,18 @@ class PrescriptionsFormAndIndexContainer extends Component {
             />
           )
         } else {
+          const notes = (prescription.notes === '') ? 'None' : prescription.notes
           const date = moment(prescription.schedule.date)
           const time = moment(prescription.schedule.time)
+
+          const filteredDays = prescription.schedule.day.filter((day) => {
+            return day !== ''
+          })
+          const capitalDays = filteredDays.map((day) => {
+            if (day !== '') {
+              return day.slice(0, 1).toUpperCase().concat(day.slice(1))
+            }
+          })
           return(
             <PrescriptionIndexTile
               key={index}
@@ -594,7 +604,8 @@ class PrescriptionsFormAndIndexContainer extends Component {
               dosage={prescription.medication.dosage}
               date={date}
               time={time}
-              notes={prescription.notes}
+              days={capitalDays.join(', ')}
+              notes={notes}
               handleEdit={this.editPrescription}
             />
           )

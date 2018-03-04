@@ -584,23 +584,29 @@ class AppointmentsFormAndIndexContainer extends Component {
             />
           )
         } else {
-          if (appointment.name === null || appointment.name === '') {
-            appointment.name = 'None'
-          }
-          if (appointment.notes === null || appointment.notes === '') {
-            appointment.notes = 'None'
-          }
+          const name = (appointment.name === '') ? 'None' : appointment.name
+          const notes = (appointment.notes === '') ? 'None' : appointment.notes
           const date = moment(appointment.schedule.date)
           const time = moment(appointment.schedule.time)
+
+          const filteredDays = appointment.schedule.day.filter((day) => {
+            return day !== ''
+          })
+          const capitalDays = filteredDays.map((day) => {
+            if (day !== '') {
+              return day.slice(0, 1).toUpperCase().concat(day.slice(1))
+            }
+          })
           return(
             <AppointmentIndexTile
               key={index}
               id={index}
-              appointmentName={appointment.name}
+              appointmentName={name}
               providerName={appointment.provider.name}
               date={date}
               time={time}
-              notes={appointment.notes}
+              days={capitalDays.join(', ')}
+              notes={notes}
               handleEdit={this.editAppointment}
             />
           )

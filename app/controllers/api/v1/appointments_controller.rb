@@ -8,22 +8,34 @@ class Api::V1::AppointmentsController < ApplicationController
   end
 
   def create
-    appointment = Appointment.new(construct_params)
-    appointment.user = current_user
-    appointment.provider = Provider.find(provider_params['id'])
+    if params[:method].nil?
+      appointment = Appointment.new(construct_params)
+      appointment.user = current_user
+      appointment.provider = Provider.find(appointment_params[:provider])
 
-    if appointment.save
-      render status: 201, message: 'Successfully created new appointment.',
-        json: Appointment.where(user: current_user), include: [:schedule, :provider]
-    else
-      render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
+      if appointment.save
+        render status: 201, message: 'Successfully created new appointment.',
+          json: Appointment.where(user: current_user), include: [:schedule, :provider]
+      else
+        render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
+      end
+    elsif params[:method] == 'PATCH'
+      appointment = Appointment.find(appointment_params[:id])
+      appointment.provider = Provider.find(appointment_params[:provider])
+
+      if appointment.update(construct_params)
+        render status: 200, message: 'Successfully updated appointment.',
+          json: Appointment.where(user: current_user), include: [:schedule, :provider]
+      else
+        render json: { error: appointment.errors.full_messages }, status: :unprocessable_entity
+      end
     end
   end
 
   private
 
   def appointment_params
-    params.require(:appointment).permit(:name, :notes, :date, :time, :rule, day: [])
+    params.require(:appointment).permit(:id, :name, :provider, :notes, :date, :time, :rule, day: [])
   end
 
   def provider_params
